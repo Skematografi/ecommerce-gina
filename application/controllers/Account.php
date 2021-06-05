@@ -48,7 +48,7 @@ class Account extends CI_Controller {
 		];
 
 		$where = array(
-			'id_user' => $id
+			'id_user' => $id_user
 		);
 
 		$this->db->where($where);

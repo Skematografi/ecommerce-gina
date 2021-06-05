@@ -24,23 +24,42 @@ class  Model_Produk extends CI_Model {
 
 	public function tambah_produk($data){
 	   try{
-	      $this->db->insert('produk', $data);
+	      $this->db->insert('products', $data);
 	      return true;
 	    }catch(Exception $e){
+			return $e;
 	    }
 	}
 
-	public function hapus($data,$table){
-		return $this->db->delete($table,$data);
+	public function hapus($id, $data){
+		$this->db->where(['id' => $id]);
+		$this->db->update('products', $data);
 	}
 
-	public function edit($where,$table){
-		return $this->db->get_where($table,$where);
+	public function update($id,$data){
+		$this->db->where(['id' => $id]);
+		$this->db->update('products', $data);
 	}
 
-	public function update($where,$data,$table){
-		$this->db->where($where);
-		$this->db->update($table,$data);
+	public function getData(){
+
+		$sql="SELECT a.id,a.code,a.name,a.description,a.category,a.image,a.weight,a.size,a.price,a.stock
+				FROM products a WHERE a.status = 1
+				ORDER BY a.created_at DESC, a.stock DESC";
+
+		$query = $this->db->query($sql);
+
+		return $query->result_array();
+	}
+
+	public function getProductById($id){
+
+		$sql="SELECT a.id,a.code,a.name,a.description,a.category,a.image,a.weight,a.size,a.price,a.stock
+				FROM products a WHERE a.id = '".$id."' AND a.status = 1";
+
+		$query = $this->db->query($sql);
+
+		return $query->result();
 	}
 
 }

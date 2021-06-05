@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends CI_Controller {
-
+	
 	function __construct(){
 		parent::__construct();
 		$this->load->model('Model_Produk');
@@ -29,15 +29,39 @@ class Dashboard extends CI_Controller {
 			
 	}
 
+	public function getDatatableProduct()
+	{   
+
+		$products = $this->Model_Produk->getData();
+		$data = array();
+		foreach($products as $row) {
+			$data[] = [
+				"code" => $row['code'],
+				"name" => $row['name'],
+				"description" => $row['description'],
+				"category" => $row['category'],
+				"image" => $row['image'],
+				"weight" => $row['weight'],
+				"size" => $row['size'],
+				"price" => $row['price'],
+				"stock" => $row['stock'],
+				"action" => '<a href="javascript:void(0);" title="Klik untuk melakukan perubahan" data-id="'.$row['id'].'" class="mr-1" onclick="editProduct(this)"><i class="far fa-edit text-primary"></i></a><a href="javascript:void(0);" title="Klik untuk menghapus" data-id="'.$row['id'].'" onclick="deleteProduct(this)"><i class="far fa-trash-alt text-danger"></i></a>'
+			];
+		}
+
+        return $data;
+	}
+
 	//CRUD Produk
 
 	public function produk_tersedia()
 	{
 		$this->load->view('dashboard/header');
 		$this->load->view('dashboard/asidebar');
+		$this->load->view('dashboard/modal_product');
 		$data['auto']=$this->Model_Produk->auto_id();
-		$data['stok']='Stok Tersedia';
-		$data['produk']= $this->db->query('SELECT * FROM produk WHERE stok != 0')->result();
+		$data['stok']='List Produk';
+		$data['products']= $this->getDatatableProduct();
 		$this->load->view('dashboard/produk',$data);	
 	}
 
@@ -48,81 +72,91 @@ class Dashboard extends CI_Controller {
     	$config['max_size'] = 2048;
 
     	$this->upload->initialize($config);
-	      $this->load->library('upload');
-	      if (!$this->upload->do_upload('gambar')) //jika gagal upload
-	      {
-	        $this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk gagal di tambah</div>');
-	          redirect('dashboard/produk_tersedia');
-	      } else
-	      {
-	          $file = $this->upload->data();
-	          $data = ['gambar' => $file['file_name'],
-	           		'id_produk' => $this->input->post('id_produk',TRUE),
-	            	'nama_produk' => htmlspecialchars($this->input->post('nama_produk',TRUE)),
-					'kategori' => htmlspecialchars($this->input->post('kategori',TRUE)),
-					'deskripsi' => htmlspecialchars($this->input->post('deskripsi',TRUE)),
-					'harga' => $this->input->post('harga',TRUE),
-					'berat' => $this->input->post('berat',TRUE),
-					'stok' => $this->input->post('stok',TRUE)
-	         ];
-	          $this->Model_Produk->tambah_produk($data); //memasukan data ke database
-	          $this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk berhasil di tambah</div>');
-	          redirect('dashboard/produk_tersedia');
+		$this->load->library('upload');
 
-	      }
+		$id = $this->input->post('product_id',TRUE);
+
+		if($id == ''){
+			//Proses penyimpanan data
+			if (!$this->upload->do_upload('image')) {
+				$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk gagal di tambah</div>');
+				redirect('dashboard/produk_tersedia');
+			} else {
+				$file = $this->upload->data();
+				$data = ['image' => $file['file_name'],
+					'code' => strtoupper($this->input->post('code',TRUE)),
+					'name' => htmlspecialchars($this->input->post('name',TRUE)),
+					'category' => htmlspecialchars($this->input->post('category',TRUE)),
+					'description' => htmlspecialchars($this->input->post('description',TRUE)),
+					'price' => $this->input->post('price',TRUE),
+					'size' => strtoupper($this->input->post('size',TRUE)),
+					'weight' => $this->input->post('weight',TRUE),
+					'stock' => $this->input->post('stock',TRUE)
+				];
+				$this->Model_Produk->tambah_produk($data); //memasukan data ke database
+				$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk berhasil di tambah</div>');
+				redirect('dashboard/produk_tersedia');
+
+			}
+
+		} else {
+			//Proses update data
+			if($_FILES['image']['size'] == 0){	
+				$data = [
+					'name' => htmlspecialchars($this->input->post('name',TRUE)),
+					'category' => htmlspecialchars($this->input->post('category',TRUE)),
+					'description' => htmlspecialchars($this->input->post('description',TRUE)),
+					'price' => $this->input->post('price',TRUE),
+					'size' => strtoupper($this->input->post('size',TRUE)),
+					'weight' => $this->input->post('weight',TRUE),
+					'stock' => $this->input->post('stock',TRUE)
+				];
+				$this->Model_Produk->update($id, $data); //memasukan data ke database
+				$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk berhasil di update</div>');
+				redirect('dashboard/produk_tersedia');
+
+			} else {
+
+				if (!$this->upload->do_upload('image')){
+					$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk gagal di update</div>');
+					redirect('dashboard/produk_tersedia');
+				} else {
+					$file = $this->upload->data();
+					$data = ['image' => $file['file_name'],
+						'name' => htmlspecialchars($this->input->post('name',TRUE)),
+						'category' => htmlspecialchars($this->input->post('category',TRUE)),
+						'description' => htmlspecialchars($this->input->post('description',TRUE)),
+						'price' => $this->input->post('price',TRUE),
+						'size' => strtoupper($this->input->post('size',TRUE)),
+						'weight' => $this->input->post('weight',TRUE),
+						'stock' => $this->input->post('stock',TRUE)
+					];
+					$this->Model_Produk->update($id, $data); //memasukan data ke database
+					$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk berhasil di update</div>');
+					redirect('dashboard/produk_tersedia');
+	
+				}
+			}
+
+		}
+
+		
   	}
 
-	public function hapus_produk($id){
-		$where = array('id_produk' => $id);
-		$this->Model_Produk->hapus($where,'produk');
+	public function hapus_produk(){
+		$id = $this->input->post('id',TRUE);
+
+		$this->Model_Produk->hapus($id, ["status" => 0]);
 		$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> Produk berhasil di hapus</div>');
-		redirect('dashboard/produk_tersedia');
+
+		echo json_encode(['link' =>'Dashboard/produk_tersedia']);
 	}
 
-	public function edit_produk($id_produk){
-
-		$this->load->view('dashboard/header');
-		$this->load->view('dashboard/asidebar');
-		$where = array('id_produk' => $id_produk);
-		$data['data'] = $this->Model_Produk->edit($where,'produk')->result();		
-		$this->load->view('dashboard/edit_produk',$data);
+	public function edit_produk(){
+		$id = $this->input->post('id',TRUE);
+		$data = $this->Model_Produk->getProductById($id);
+		echo json_encode($data);
 	}	
-
-	public function update_produk(){
-
-    	$config['upload_path'] = './assets/produk/';
-    	$config['allowed_types'] = 'gif|jpg|png|JPEG';
-    	$config['max_size'] = 2048;
-
-    	$this->upload->initialize($config);
-	      $this->load->library('upload');
-	      if (!$this->upload->do_upload('gambar')) //jika gagal upload
-	      {
-	        $this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk gagal di tambah</div>');
-	          redirect('dashboard/produk_tersedia');
-	      } else
-	      {
-	          $file = $this->upload->data();
-	          $id_produk = $this->input->post('id_produk',TRUE);
-
-	          $data = ['gambar' => $file['file_name'],
-	            	'nama_produk' => htmlspecialchars($this->input->post('nama_produk',TRUE)),
-					'kategori' => htmlspecialchars($this->input->post('kategori',TRUE)),
-					'deskripsi' => htmlspecialchars($this->input->post('deskripsi',TRUE)),
-					'harga' => $this->input->post('harga',TRUE),
-					'berat' => $this->input->post('berat',TRUE),
-					'stok' => $this->input->post('stok',TRUE)
-	         ];
-
-	        $where = array(
-				'id_produk' => $id_produk
-			);
-	          $this->Model_Produk->update($where,$data,'produk'); //update data ke database
-	          $this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk berhasil di update</div>');
-	          redirect('dashboard/produk_tersedia');
-
-	      }
-  	}
 
 	public function produk_habis()
 	{

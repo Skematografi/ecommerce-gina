@@ -1,63 +1,64 @@
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h4><?php echo $stok; ?></h4>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
     </section>
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-12">
+        <div class="col-md-12">
           <small><?php echo $this->session->flashdata('message'); ?></small>
           <div class="card">
+
             <div class="card-header">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_tambah">
-                Tambah
-              </button>
-              
+              <div class="row">
+                <div class="col-md-6">
+                  <h3><?php echo $stok; ?></h3>
+                </div>
+                <div class="col-md-6">
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_tambah"  style="float:right;" onclick="cleanForm()">Tambah</button>
+                </div>
+              </div>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>Id Produk</th>
-                  <th>Nama Produk</th>
-                  <th>Kategori</th>
-                  <th>Deskripsi</th>
-                  <th>Gambar</th>
-                  <th>Harga</th>
-                  <th>Berat</th>
-                  <th>Stok</th>
-                  <th>Aksi</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach($produk as $row): ?>
-                <tr>
-                  <td><?php echo $row->id_produk; ?></td>
-                  <td><?php echo $row->nama_produk; ?></td>
-                  <td><?php echo $row->kategori; ?></td>
-                  <td><?php echo $row->deskripsi; ?></td>
-                  <td><img src="<?php echo base_url();?>assets/produk/<?php echo $row->gambar;?>" style="width:50px; height: 50px;"></td>
-                  <td><?php echo $row->harga; ?></td>
-                  <td><?php echo $row->berat; ?></td>
-                  <td><?php echo $row->stok; ?></td>
-                  <td class="text-center">
-                   <?php echo anchor('dashboard/edit_produk/'.$row->id_produk, "<button class='btn btn-primary'><i class='far fa-edit'></i></button>");
-                  ?>
-                  <?php echo anchor('dashboard/hapus_produk/'.$row->id_produk, "<button class='btn btn-danger'><i class='far fa-trash-alt'></i></button>");
-                  ?>
-                </td>
-                </tr>
-                <?php endforeach; ?>
-                </tbody>
-              </table>
+              <div class="row">
+                <div class="col-md-12">
+                  <table id="tableProduct" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                      <tr class="text-center">
+                        <th>No.</th>
+                        <th>Kode Produk</th>
+                        <th>Nama Produk</th>
+                        <th>Deskripsi</th>
+                        <th>Kategori</th>
+                        <th>Gambar</th>
+                        <th>Berat (Kg)</th>
+                        <th>Ukuran</th>
+                        <th>Harga (Rp)</th>
+                        <th>Stok</th>
+                        <th>Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php $i = 1; foreach($products as $row): ?>
+                      <tr>
+                        <td class="text-center"><?php echo $i++; ?></td>
+                        <td><?php echo $row['code']; ?></td>
+                        <td><?php echo $row['name']; ?></td>
+                        <td><?php echo $row['description']; ?></td>
+                        <td><?php echo $row['category']; ?></td>
+                        <td class="text-center"><img src="<?php echo base_url();?>assets/produk/<?php echo $row['image'];?>" style="width:70px; height: 70px;"></td>
+                        <td class="text-center"><?php echo $row['weight']; ?></td>
+                        <td class="text-center"><?php echo $row['size']; ?></td>
+                        <td class="text-center"><?php echo number_format($row['price'],2,',','.'); ?></td>
+                        <td class="text-center"><?php echo $row['stock']; ?></td>
+                        <td class="text-center"><?php echo $row['action']; ?></td>
+                      </tr>
+                      <?php endforeach; ?>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
             <!-- /.card-body -->
           </div>
@@ -70,85 +71,6 @@
     <!-- /.content -->
   </div>
 
-  <div class="modal fade" id="modal_tambah">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Tambah Produk</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="col-md-12">
-            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('dashboard/do_upload'); ?>" autocomplete="off">
-              <div class="row">
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">ID Produk</label>
-                    <input type="text" class="form-control" id="id_produk" name="id_produk" value="<?= $auto;?>" readonly>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">Nama Produk</label>
-                    <input type="text" class="form-control" id="nama_produk" name="nama_produk" maxlength="255" autofocus required>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Kategori</label>
-                    <textarea class="form-control" id="kategori" name="kategori" maxlength="255" rows="3" required></textarea>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Deskripsi</label>
-                    <textarea class="form-control" id="deskripsi" name="deskripsi" maxlength="255" rows="3" required></textarea>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label for="exampleInputFile">Gambar</label>
-                        <input type="file" id="gambar" name="gambar" required><br>
-                        <small class="text-danger">* Max. 2 MB (jpg/jpeg/png)</small>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">Harga</label>
-                    <input type="number" class="form-control" id="harga" min="1000" name="harga" required>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Berat</label>
-                    <input type="number" class="form-control" id="berat" min="1" max="100" name="berat" required>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">Stok</label>
-                    <input type="number" class="form-control" id="stok" min="1" name="stok" required>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                <input type="submit" class="btn btn-primary" name="submit" id="submit" value="Simpan">
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <strong>Copyright &copy; 2020 <a href="<?php echo base_url();?>">Toko Sinar Rangkasbitung</a>.</strong>
@@ -178,16 +100,74 @@
 <!-- page script -->
 <script>
   $(function () {
-    $("#example1").DataTable();
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-    });
+    $("#tableProduct").DataTable();
   });
+
+  function editProduct(ele){
+
+    let id = $(ele).attr('data-id');
+    let url = '<?= base_url(); ?>Dashboard/edit_produk';
+
+    $.ajax({
+      url : url,
+      method : 'POST',
+      data: {id: id},
+      dataType: 'json',
+      success : function(res){
+
+        cleanForm();
+        $('#title_modal_product').empty().append('Update Produk');
+        $('.msg-image-1').hide();
+        $('.msg-image-2').show();
+        $('#image').attr('required', false);
+
+        $('#code').val(res[0].code).attr('readonly', true);
+        $('#name').val(res[0].name);
+        $('#description').val(res[0].description);
+        $('#category').val(res[0].category);
+        // $('#image').val(res[0].image);
+        $('#size').val(res[0].size);
+        $('#weight').val(res[0].weight);
+        $('#price').val(res[0].price);
+        $('#stock').val(res[0].stock);
+        $('#product_id').val(res[0].id);
+        $('#submit').val('Update');
+
+        $('#modal_tambah').modal('show');
+
+      }, error : function(err){
+        console.log(err)
+      }
+    });
+  }
+
+  function deleteProduct(ele){
+
+    let id = $(ele).attr('data-id');
+    let url = '<?= base_url(); ?>Dashboard/hapus_produk';
+
+    $.ajax({
+      url : url,
+      method : 'POST',
+      data: {id: id},
+      dataType: 'json',
+      success : function(res){
+        window.location.href = "<?= base_url(); ?>"+res.link;
+      }, error : function(err){
+        console.log(err)
+      }
+    });
+  }
+
+  function cleanForm(){
+    $('.msg-image-1').show();
+    $('.msg-image-2').hide();
+    $('#image').attr('required', true);
+    $('#code').attr('readonly', false);
+    $('#code, #name, #description,#category,#image,#size,#weight,#price,#stock,#product_id').val('');
+    $('#title_modal_product').empty().append('Tambah Produk');
+    $('#submit').val('Simpan');
+  }
 </script>
 </body>
 </html>
