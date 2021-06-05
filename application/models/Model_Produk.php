@@ -45,7 +45,7 @@ class  Model_Produk extends CI_Model {
 
 		$sql="SELECT a.id,a.code,a.name,a.description,a.category,a.image,a.weight,a.size,a.price,a.stock
 				FROM products a WHERE a.status = 1
-				ORDER BY a.created_at DESC, a.stock DESC";
+				ORDER BY a.stock DESC";
 
 		$query = $this->db->query($sql);
 

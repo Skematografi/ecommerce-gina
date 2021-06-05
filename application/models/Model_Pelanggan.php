@@ -27,4 +27,20 @@ class  Model_Pelanggan extends CI_Model {
 		$this->db->update($table,$data);
 	}
 
+	public function getData(){
+
+		$sql="SELECT a.id,a.user_id,a.name,a.email,a.phone,a.gender,a.address,a.state,a.city,a.district,a.postal_code
+				FROM members a WHERE a.status = 1
+				ORDER BY a.created_at DESC";
+
+		$query = $this->db->query($sql);
+
+		return $query->result_array();
+	}
+
+	public function hapus($id, $data){
+		$this->db->where(['id' => $id]);
+		$this->db->update('members', $data);
+	}
+
 }

@@ -1,58 +1,46 @@
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h4>Data Pelanggan</h4>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
     </section>
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-12">
+        <div class="col-md-12">
+          <small><?php echo $this->session->flashdata('message'); ?></small>
           <div class="card">
+            <div class="card-header">
+              <h3>List Member</h3>
+            </div>
             <!-- /.card-header -->
             <div class="card-body">
               <table id="pelanggan" class="table table-bordered table-striped table-responsive">
                 <thead>
-                <tr>
-                  <th>Id User</th>
-                  <th>Id Pelanggan</th>
-                  <th>Nama Pelanggan</th>
+                <tr class="text-center">
+                  <th>No.</th>
+                  <th>Nama</th>
                   <th>Jenis Kelamin</th>
-                  <th>Status</th>
-                  <th>Telpon</th>
+                  <th>Telepon</th>
                   <th>Email</th>
                   <th>Alamat</th>
                   <th>Provinsi</th>
-                  <th>Kabupaten</th>
+                  <th>Kabupaten/Kota</th>
                   <th>Kecamatan</th>
-                  <th>Kode Pos</th>
                   <th>Aksi</th>
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($pelanggan as $row): ?>
+                <?php $i=1; foreach($members as $row): ?>
                 <tr>
-                  <td><?php echo $row->id_user; ?></td>
-                  <td><?php echo $row->id_pelanggan; ?></td>
-                  <td><?php echo $row->nama; ?></td>
-                  <td><?php echo $row->jenis_kelamin; ?></td>
-                  <td><?php echo $row->status; ?></td>
-                  <td><?php echo $row->telpon; ?></td>
-                  <td><?php echo $row->email; ?></td>
-                  <td><?php echo $row->alamat; ?></td>
-                  <td><?php echo $row->provinsi; ?></td>
-                  <td><?php echo $row->kabupaten; ?></td>
-                  <td><?php echo $row->kecamatan; ?></td>
-                  <td><?php echo $row->kode_pos; ?></td>
-                  <td class="text-center">
-                   <?php echo anchor('dashboard/ban_pelanggan/'.$row->id_user, "<button class='btn btn-warning'><i class='fas fa-ban'></i></button>");
-                  ?>
-                  </td>
+                  <td class="text-center"><?= $i++; ?></td>
+                  <td><?= $row['name']; ?></td>
+                  <td><?= $row['gender']; ?></td>
+                  <td><?= $row['phone']; ?></td>
+                  <td><?= $row['email']; ?></td>
+                  <td><?= $row['address']; ?></td>
+                  <td><?= $row['state']; ?></td>
+                  <td><?= $row['city']; ?></td>
+                  <td><?= $row['district']; ?></td>
+                  <td class="text-center"><?= $row['action']; ?></td>
                 </tr>
                 <?php endforeach;?>
                 </tbody>
@@ -96,15 +84,26 @@
 <!-- page script -->
 <script>
   $(function () {
-    $('#pelanggan').DataTable({
-      "paging": true,
-      "lengthChange": true,
-      "searching": true,
-      "ordering": true,
-      "info": true,
-      "autoWidth": true,
-    });
+    $('#pelanggan').DataTable();
   });
+
+  function deleteMember(ele){
+
+    let id = $(ele).attr('data-id');
+    let url = '<?= base_url(); ?>Dashboard/hapus_member';
+
+    $.ajax({
+      url : url,
+      method : 'POST',
+      data: {id: id},
+      dataType: 'json',
+      success : function(res){
+        window.location.href = "<?= base_url(); ?>"+res.link;
+      }, error : function(err){
+        console.log(err)
+      }
+    });
+  }
 </script>
 </body>
 </html>

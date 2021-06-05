@@ -29,32 +29,10 @@ class Dashboard extends CI_Controller {
 			
 	}
 
-	public function getDatatableProduct()
-	{   
 
-		$products = $this->Model_Produk->getData();
-		$data = array();
-		foreach($products as $row) {
-			$data[] = [
-				"code" => $row['code'],
-				"name" => $row['name'],
-				"description" => $row['description'],
-				"category" => $row['category'],
-				"image" => $row['image'],
-				"weight" => $row['weight'],
-				"size" => $row['size'],
-				"price" => $row['price'],
-				"stock" => $row['stock'],
-				"action" => '<a href="javascript:void(0);" title="Klik untuk melakukan perubahan" data-id="'.$row['id'].'" class="mr-1" onclick="editProduct(this)"><i class="far fa-edit text-primary"></i></a><a href="javascript:void(0);" title="Klik untuk menghapus" data-id="'.$row['id'].'" onclick="deleteProduct(this)"><i class="far fa-trash-alt text-danger"></i></a>'
-			];
-		}
+	//CRUD Produk ========================================================
 
-        return $data;
-	}
-
-	//CRUD Produk
-
-	public function produk_tersedia()
+	public function produk()
 	{
 		$this->load->view('dashboard/header');
 		$this->load->view('dashboard/asidebar');
@@ -80,7 +58,7 @@ class Dashboard extends CI_Controller {
 			//Proses penyimpanan data
 			if (!$this->upload->do_upload('image')) {
 				$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk gagal di tambah</div>');
-				redirect('dashboard/produk_tersedia');
+				redirect('dashboard/produk');
 			} else {
 				$file = $this->upload->data();
 				$data = ['image' => $file['file_name'],
@@ -95,7 +73,7 @@ class Dashboard extends CI_Controller {
 				];
 				$this->Model_Produk->tambah_produk($data); //memasukan data ke database
 				$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk berhasil di tambah</div>');
-				redirect('dashboard/produk_tersedia');
+				redirect('dashboard/produk');
 
 			}
 
@@ -113,13 +91,13 @@ class Dashboard extends CI_Controller {
 				];
 				$this->Model_Produk->update($id, $data); //memasukan data ke database
 				$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk berhasil di update</div>');
-				redirect('dashboard/produk_tersedia');
+				redirect('dashboard/produk');
 
 			} else {
 
 				if (!$this->upload->do_upload('image')){
 					$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk gagal di update</div>');
-					redirect('dashboard/produk_tersedia');
+					redirect('dashboard/produk');
 				} else {
 					$file = $this->upload->data();
 					$data = ['image' => $file['file_name'],
@@ -133,7 +111,7 @@ class Dashboard extends CI_Controller {
 					];
 					$this->Model_Produk->update($id, $data); //memasukan data ke database
 					$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk berhasil di update</div>');
-					redirect('dashboard/produk_tersedia');
+					redirect('dashboard/produk');
 	
 				}
 			}
@@ -149,7 +127,7 @@ class Dashboard extends CI_Controller {
 		$this->Model_Produk->hapus($id, ["status" => 0]);
 		$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> Produk berhasil di hapus</div>');
 
-		echo json_encode(['link' =>'Dashboard/produk_tersedia']);
+		echo json_encode(['link' =>'Dashboard/produk']);
 	}
 
 	public function edit_produk(){
@@ -169,35 +147,25 @@ class Dashboard extends CI_Controller {
 	}
 
 	
+	//Member ========================================================
 
-	public function pelanggan()
+	public function member()
 	{
 		$this->load->view('dashboard/header');
 		$this->load->view('dashboard/asidebar');
-		$this->db->select('*');
-		$this->db->from('user');
-		$this->db->join('pelanggan', 'pelanggan.email = user.email');
-		$data['pelanggan']= $this->db->get()->result();
+		$data['members']= $this->getDatatableMember();
 		$this->load->view('dashboard/pelanggan',$data);	
 	}
 
-	public function ban_pelanggan($id_user){
+	public function hapus_member(){
+		$id = $this->input->post('id',TRUE);
+		$this->Model_Pelanggan->hapus($id, ["status" => 0]);
+		$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> Member berhasil di hapus</div>');
 
-		$nonaktif=0;
-
-		$data=array(
-			'status' => $nonaktif
-		);
-
-		$where = array(
-			'id_user' => $id_user
-		);
-
-		$this->Model_Pelanggan->update($where,$data,'user'); 
-	    $this->session->set_flashdata('message', '<div class="alert alert-primary alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Pelanggan berhasil di non aktifkan</div>');
-	    redirect('dashboard/pelanggan');
-
+		echo json_encode(['link' =>'Dashboard/member']);
 	}
+
+	//Order ========================================================
 
 	public function pesanan()
 	{
@@ -269,5 +237,52 @@ class Dashboard extends CI_Controller {
 			")->row();
 		$this->load->view('dashboard/laporan',$data);
 			
+	}
+
+	//Datatable Collection ========================================================
+
+	public function getDatatableProduct()
+	{   
+
+		$products = $this->Model_Produk->getData();
+		$data = array();
+		foreach($products as $row) {
+			$data[] = [
+				"code" => $row['code'],
+				"name" => $row['name'],
+				"description" => $row['description'],
+				"category" => $row['category'],
+				"image" => $row['image'],
+				"weight" => $row['weight'],
+				"size" => $row['size'],
+				"price" => $row['price'],
+				"stock" => $row['stock'],
+				"action" => '<a href="javascript:void(0);" title="Klik untuk melakukan perubahan" data-id="'.$row['id'].'" class="mr-1" onclick="editProduct(this)"><i class="far fa-edit text-primary"></i></a><a href="javascript:void(0);" title="Klik untuk menghapus" data-id="'.$row['id'].'" onclick="deleteProduct(this)"><i class="far fa-trash-alt text-danger"></i></a>'
+			];
+		}
+
+        return $data;
+	}
+
+	public function getDatatableMember()
+	{   
+
+		$products = $this->Model_Pelanggan->getData();
+		$data = array();
+		foreach($products as $row) {
+			$data[] = [
+				"name" => $row['name'],
+				"email" => $row['email'],
+				"phone" => $row['phone'],
+				"gender" => $row['gender'],
+				"address" => $row['address'],
+				"state" => $row['state'],
+				"city" => $row['city'],
+				"district" => $row['district'],
+				"action" => '<a href="javascript:void(0);" title="Klik untuk menghapus" data-id="'.$row['id'].'" onclick="deleteMember(this)"><i class="fas fa-remove text-danger"></i></a>'
+			];
+		}
+
+        return $data;
 	}
 }

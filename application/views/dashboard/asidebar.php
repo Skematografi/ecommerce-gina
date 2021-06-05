@@ -34,34 +34,25 @@
               </p>
             </a>
           </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-edit"></i>
+          <li class="nav-item">
+            <a href="<?php echo base_url();?>dashboard/produk" class="nav-link">
+              <i class="fas fa-list nav-icon"></i>
+              <p>Produk</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?php echo base_url();?>dashboard/member" class="nav-link">
+              <i class="nav-icon fas fa-users"></i>
               <p>
-                Produk
-                <i class="fas fa-angle-left right"></i>
+                Member
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?php echo base_url();?>dashboard/produk_tersedia" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Stok Tersedia</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo base_url();?>dashboard/produk_habis" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Stok Habis</p>
-                </a>
-              </li>
-            </ul>
           </li>
           <li class="nav-item">
             <a href="<?php echo base_url();?>dashboard/pelanggan" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
+              <i class="nav-icon fas fa-money"></i>
               <p>
-                Pelanggan
+                Promo
               </p>
             </a>
           </li>

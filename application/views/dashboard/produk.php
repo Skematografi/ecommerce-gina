@@ -51,7 +51,7 @@
                         <td class="text-center"><?php echo $row['weight']; ?></td>
                         <td class="text-center"><?php echo $row['size']; ?></td>
                         <td class="text-center"><?php echo number_format($row['price'],2,',','.'); ?></td>
-                        <td class="text-center"><?php echo $row['stock']; ?></td>
+                        <td class="text-center"><?php echo ($row['stock'] > 0 ? $row['stock'] :  '<span class="badge badge-danger">Habis</span>'); ?></td>
                         <td class="text-center"><?php echo $row['action']; ?></td>
                       </tr>
                       <?php endforeach; ?>
