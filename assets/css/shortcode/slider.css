@@ -34,7 +34,7 @@
 .slider__fixed--height {
   align-items: center;
   display: flex;
-  height: 800px;
+  height: 550px;
 }
 .slider--one .slide {
     align-items: center;
@@ -57,7 +57,7 @@
     text-transform: uppercase;
 }
 .cr__btn a {
-    background: #c43b68 none repeat scroll 0 0;
+    background: #000 none repeat scroll 0 0;
     color: #fff;
     display: inline-block;
     font-family: Poppins;
@@ -70,8 +70,8 @@
     transition: all 0.3s ease 0s;
 }
 .cr__btn a:hover {
-    background: #313131 none repeat scroll 0 0;
-    color: #fff;
+    background: #f9f862 none repeat scroll 0 0;
+    color: #000;
 }
 .slide__thumb {
     text-align: right;

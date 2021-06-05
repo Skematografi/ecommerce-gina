@@ -8,7 +8,7 @@
                             <div class="col-md-7 col-sm-7 col-xs-12 col-lg-6">
                                 <div class="slide">
                                     <div class="slider__inner">
-                                        <h2>Koleksi 2020</h2>
+                                        <h2>Koleksi <?= date('Y'); ?></h2>
                                         <h1>Kualitas Terbaik</h1>
                                         <div class="cr__btn">
                                             <a href="<?php echo base_url();?>ecommerce/product_grid">Belanja Sekarang</a>
@@ -18,7 +18,7 @@
                             </div>
                             <div class="col-lg-6 col-sm-5 col-xs-12 col-md-5">
                                 <div class="slide__thumb">
-                                    <img src="<?php echo base_url();?>assets/images/slider/fornt-img/perabotan.jpg" alt="slider images">
+                                    <img src="<?php echo base_url();?>assets/images/slider/front.png" alt="slider images">
                                 </div>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                     <div class="col-lg-12">
                         <div class="section__title--2 text-center">
                             <h2 class="title__line">Produk Terbaru</h2>
-                            <p>Perabotan kualitas terbaik</p>
+                            <p>Clothing Kualitas Terbaik</p>
                         </div>
                     </div>
                 </div>
@@ -84,17 +84,19 @@
                     <div class="col-md-12">
                         <div class="ht__brand__inner">
                             <ul class="brand__list owl-carousel clearfix">
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/1.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/2.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/3.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/4.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/5.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/5.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/1.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/2.png" alt="brand images"></a></li>
+                                <li><a href="javascript:void(0);"><img src="<?php echo base_url();?>assets/images/logo/logo.png" alt="brand images"></a></li>
+                                <li><a href="javascript:void(0);"><img src="<?php echo base_url();?>assets/images/logo/logo.png" alt="brand images"></a></li>
+                                <li><a href="javascript:void(0);"><img src="<?php echo base_url();?>assets/images/logo/logo.png" alt="brand images"></a></li>
+                                <li><a href="javascript:void(0);"><img src="<?php echo base_url();?>assets/images/logo/logo.png" alt="brand images"></a></li>
+                                <li><a href="javascript:void(0);"><img src="<?php echo base_url();?>assets/images/logo/logo.png" alt="brand images"></a></li>
+                                <li><a href="javascript:void(0);"><img src="<?php echo base_url();?>assets/images/logo/logo.png" alt="brand images"></a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <a href="https://api.whatsapp.com/send?phone=6285157552214&text=Hallo%20Agan%20Colonizer.co" target="_blank" class="icon-whatsapp">
+            <img src="<?php echo base_url();?>assets/images/logo/whatsapp.png" alt="icon whatsapp" id="whatsapp" >
+        </a>

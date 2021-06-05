@@ -35,6 +35,28 @@
 
     <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 
+    <style>
+        .icon-whatsapp {
+            position: fixed;
+            z-index: 2147483647;
+        }
+        #whatsapp {
+            border-radius: 2px;
+            bottom: 15px;
+            box-shadow: 0 0 10px rgb(0 0 0 / 5%);
+            color: #fff;
+            font-size: 28px;
+            height: 45px;
+            line-height: 49px;
+            position: fixed;
+            right: 15px;
+            text-align: center;
+            transition: all 0.3s ease 0s;
+            width: 45px;
+            z-index: 200;
+        }
+    </style>
+
     <script src="<?php echo base_url();?>assets/plugins/jquery/jquery.min.js"></script>
 
 

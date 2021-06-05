@@ -19,7 +19,7 @@
                                         <li class="drop"><a href="<?php echo base_url();?>">Home</a></li>
                                         <li class="drop"><a href="<?php echo base_url();?>ecommerce/product_grid">Produk</a>
                                         </li>
-                                        <li><a href="<?php echo base_url();?>ecommerce/contact">Kontak</a></li>
+                                        <li><a href="<?php echo base_url();?>ecommerce/contact">Konfirmasi Pembayaran</a></li>
                                     </ul>
                                 </nav>
 
@@ -28,7 +28,7 @@
                                         <ul>
                                             <li><a href="<?php echo base_url();?>">Home</a></li>
                                             <li><a href="<?php echo base_url();?>ecommerce/product_grid">Produk</a></li>
-                                            <li><a href="<?php echo base_url();?>ecommerce/contact">Kontak</a></li>
+                                            <li><a href="<?php echo base_url();?>ecommerce/contact">Konfirmasi Pembayaran</a></li>
                                         </ul>
                                     </nav>
                                 </div>  

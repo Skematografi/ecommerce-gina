@@ -4,9 +4,9 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="<?php echo base_url();?>dashboard" class="brand-link">
-      <img src="<?php echo base_url();?>assets/images/logo/logo_circle.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+      <img src="<?php echo base_url();?>assets/images/logo/logo_white.png" alt="AdminLTE Logo" class="brand-image"
            style="opacity: .8">
-      <span class="brand-text font-weight-light"><small>Sinar Rangkasbitung</small></span>
+      <span class="brand-text font-weight-light"><small>Colonizer.co</small></span>
     </a>
 
     <!-- Sidebar -->

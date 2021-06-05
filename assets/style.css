@@ -50,7 +50,7 @@
 /*---------------------------------------
   02. Scroll To Top
 ----------------------------------------*/
-#scrollUp {
+#scrollUp_ {
   border-radius: 2px;
   bottom: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
@@ -65,7 +65,7 @@
   width: 45px;
   z-index: 200;
 }
-#scrollUp:hover {
+#scrollUp_:hover {
 }
 
 @-webkit-keyframes scroll-ani-to-top {
@@ -96,7 +96,7 @@
     bottom: 75%;
   }
 }
-#scrollUp:hover i {
+#scrollUp_:hover i {
   -webkit-animation: 800ms linear 0s normal none infinite running scroll-ani-to-top;
           animation: 800ms linear 0s normal none infinite running scroll-ani-to-top;
   height: 100%;
@@ -106,10 +106,10 @@
   width: 100%;
   bottom: 0;
 }
-#scrollUp i {
+#scrollUp_ i {
   color: #fff;
 }
- #scrollUp {
+ #scrollUp_ {
   background: #c43b68 none repeat scroll 0 0;
 }
 
