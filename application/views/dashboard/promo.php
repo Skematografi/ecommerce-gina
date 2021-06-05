@@ -12,7 +12,7 @@
             <div class="card-header">
               <div class="row">
                 <div class="col-md-6">
-                  <h3>List Produk</h3>
+                  <h3>List Promo</h3>
                 </div>
                 <div class="col-md-6">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_tambah"  style="float:right;" onclick="cleanForm()">Tambah</button>
@@ -23,35 +23,31 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-md-12">
-                  <table id="tableProduct" class="table table-bordered table-striped table-responsive">
+                  <table id="tablePromo" class="table table-bordered table-striped table-responsive">
                     <thead>
                       <tr class="text-center">
                         <th>No.</th>
-                        <th>Kode Produk</th>
-                        <th>Nama Produk</th>
+                        <th>Kode Promo</th>
+                        <th>Nama Promo</th>
                         <th>Deskripsi</th>
-                        <th>Kategori</th>
-                        <th>Gambar</th>
-                        <th>Berat (Kg)</th>
-                        <th>Ukuran</th>
-                        <th>Harga (Rp)</th>
-                        <th>Stok</th>
+                        <th>Diskon (%)</th>
+                        <th>Tanggal Mulai</th>
+                        <th>Tanggal Akhir</th>
+                        <th>Status</th>
                         <th>Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <?php $i = 1; foreach($products as $row): ?>
+                      <?php $i = 1; foreach($promotions as $row): ?>
                       <tr>
                         <td class="text-center"><?php echo $i++; ?></td>
                         <td><?php echo $row['code']; ?></td>
                         <td><?php echo $row['name']; ?></td>
                         <td><?php echo $row['description']; ?></td>
-                        <td><?php echo $row['category']; ?></td>
-                        <td class="text-center"><img src="<?php echo base_url();?>assets/produk/<?php echo $row['image'];?>" style="width:70px; height: 70px;"></td>
-                        <td class="text-center"><?php echo $row['weight']; ?></td>
-                        <td class="text-center"><?php echo $row['size']; ?></td>
-                        <td class="text-center"><?php echo number_format($row['price'],2,',','.'); ?></td>
-                        <td class="text-center"><?php echo ($row['stock'] > 0 ? $row['stock'] :  '<span class="badge badge-danger">Habis</span>'); ?></td>
+                        <td><?php echo $row['discount']; ?></td>
+                        <td><?php echo $row['start_date']; ?></td>
+                        <td><?php echo $row['end_date']; ?></td>
+                        <td><?php echo $row['status']; ?></td>
                         <td class="text-center"><?php echo $row['action']; ?></td>
                       </tr>
                       <?php endforeach; ?>
@@ -100,13 +96,13 @@
 <!-- page script -->
 <script>
   $(function () {
-    $("#tableProduct").DataTable();
+    $("#tablePromo").DataTable();
   });
 
-  function editProduct(ele){
+  function editPromo(ele){
 
     let id = $(ele).attr('data-id');
-    let url = '<?= base_url(); ?>Dashboard/edit_produk';
+    let url = '<?= base_url(); ?>Dashboard/edit_promo';
 
     $.ajax({
       url : url,
@@ -116,21 +112,16 @@
       success : function(res){
 
         cleanForm();
-        $('#title_modal_product').empty().append('Update Produk');
-        $('.msg-image-1').hide();
-        $('.msg-image-2').show();
-        $('#image').attr('required', false);
+        $('#title_modal_promo').empty().append('Update Promo');
 
         $('#code').val(res[0].code).attr('readonly', true);
         $('#name').val(res[0].name);
         $('#description').val(res[0].description);
         $('#category').val(res[0].category);
-        // $('#image').val(res[0].image);
-        $('#size').val(res[0].size);
-        $('#weight').val(res[0].weight);
-        $('#price').val(res[0].price);
-        $('#stock').val(res[0].stock);
-        $('#product_id').val(res[0].id);
+        $('#start_date').val(res[0].start_date);
+        $('#end_date').val(res[0].end_date);
+        $('#discount').val(res[0].discount);
+        $('#promo_id').val(res[0].id);
         $('#submit').val('Update');
 
         $('#modal_tambah').modal('show');
@@ -141,10 +132,10 @@
     });
   }
 
-  function deleteProduct(ele){
+  function deletePromo(ele){
 
     let id = $(ele).attr('data-id');
-    let url = '<?= base_url(); ?>Dashboard/hapus_produk';
+    let url = '<?= base_url(); ?>Dashboard/hapus_promo';
 
     $.ajax({
       url : url,
@@ -160,12 +151,9 @@
   }
 
   function cleanForm(){
-    $('.msg-image-1').show();
-    $('.msg-image-2').hide();
-    $('#image').attr('required', true);
     $('#code').attr('readonly', false);
-    $('#code, #name, #description,#category,#image,#size,#weight,#price,#stock,#product_id').val('');
-    $('#title_modal_product').empty().append('Tambah Produk');
+    $('#code, #name, #description,#start_date,#end_date,#discount,#promo_id').val('');
+    $('#title_modal_promo').empty().append('Tambah Promo');
     $('#submit').val('Simpan');
   }
 </script>

@@ -6,6 +6,7 @@ class Dashboard extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 		$this->load->model('Model_Produk');
+		$this->load->model('Model_Promo');
 		$this->load->model('Model_Pelanggan');
 		$this->load->helper(array('form', 'url'));
 		$ver=$this->session->userdata('status');
@@ -38,7 +39,6 @@ class Dashboard extends CI_Controller {
 		$this->load->view('dashboard/asidebar');
 		$this->load->view('dashboard/modal_product');
 		$data['auto']=$this->Model_Produk->auto_id();
-		$data['stok']='List Produk';
 		$data['products']= $this->getDatatableProduct();
 		$this->load->view('dashboard/produk',$data);	
 	}
@@ -136,15 +136,86 @@ class Dashboard extends CI_Controller {
 		echo json_encode($data);
 	}	
 
-	public function produk_habis()
+	
+	//CRUD Promo ========================================================
+
+	public function promo()
 	{
 		$this->load->view('dashboard/header');
 		$this->load->view('dashboard/asidebar');
-		$data['auto']=$this->Model_Produk->auto_id();
-		$data['stok']='Stok Habis';
-		$data['produk']= $this->db->query('SELECT * FROM produk WHERE stok < 1')->result();
-		$this->load->view('dashboard/produk',$data);	
+		$this->load->view('dashboard/modal_promo');
+		$data['promotions']= $this->getDatatablePromo();
+		$this->load->view('dashboard/promo',$data);	
 	}
+
+    public function tambah_promo(){
+
+		$id = $this->input->post('product_id',TRUE);
+		$code = strtoupper($this->input->post('code',TRUE));
+		$start = new DateTime($this->input->post('start_date'));
+		$end = new DateTime($this->input->post('end_date'));
+		$check = $this->Model_Promo->getProductByCode($code);
+
+		//Proses penyimpanan data
+		if ($start > $end){
+			$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Promo gagal di simpan, tanggal akhir harus lebih dari tanggal mulai</div>');
+
+		} else {
+
+			if($id == ''){
+					$data = [
+						'code' => $code,
+						'name' => htmlspecialchars($this->input->post('name',TRUE)),
+						'description' => htmlspecialchars($this->input->post('description',TRUE)),
+						'start_date' => $this->input->post('start_date',TRUE),
+						'end_date' => $this->input->post('end_date',TRUE),
+						'discount' => $this->input->post('discount',TRUE)
+					];
+
+					if($check == 0){
+						$this->Model_Promo->tambah($data); //memasukan data ke database
+						$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Promo berhasil di simpan</div>');
+					} else {
+						$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Promo gagal di simpan, Kode sudah pernah digunakan</div>');
+					}
+
+			} else {
+				$data = [
+					'name' => htmlspecialchars($this->input->post('name',TRUE)),
+					'description' => htmlspecialchars($this->input->post('description',TRUE)),
+					'start_date' => $this->input->post('start_date',TRUE),
+					'end_date' => $this->input->post('end_date',TRUE),
+					'discount' => $this->input->post('discount',TRUE)
+				];
+
+				if($check == 0){
+					$this->Model_Promo->update($id, $data); //memasukan data ke database
+					$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Promo berhasil di update</div>');
+				} else {
+					$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Promo gagal di update, Kode sudah pernah digunakan</div>');
+				}
+			}
+		}
+
+		redirect('dashboard/promo');
+		
+  	}
+
+	public function hapus_promo(){
+		$id = $this->input->post('id',TRUE);
+
+		$this->Model_Promo->hapus($id, ["status" => 0]);
+		$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> Promo berhasil di hapus</div>');
+
+		echo json_encode(['link' =>'Dashboard/promo']);
+	}
+
+	public function edit_promo(){
+		$id = $this->input->post('id',TRUE);
+		$data = $this->Model_Promo->getProductById($id);
+		echo json_encode($data);
+	}	
+
 
 	
 	//Member ========================================================
@@ -280,6 +351,38 @@ class Dashboard extends CI_Controller {
 				"city" => $row['city'],
 				"district" => $row['district'],
 				"action" => '<a href="javascript:void(0);" title="Klik untuk menghapus" data-id="'.$row['id'].'" onclick="deleteMember(this)"><i class="fas fa-remove text-danger"></i></a>'
+			];
+		}
+
+        return $data;
+	}
+
+	public function getDatatablePromo()
+	{   
+
+		$products = $this->Model_Promo->getData();
+		$data = array();
+		$now = new DateTime(date('Y-m-d'));
+		
+		foreach($products as $row) {
+			
+			$end = new DateTime($row['end_date']);
+
+			if($end > $now) {
+				$status = '<div class="badge badge-success">Berjalan</div>';
+			} else {
+				$status = '<div class="badge badge-secondary">Berakhir</div>';
+			}
+
+			$data[] = [
+				"code" => $row['code'],
+				"name" => $row['name'],
+				"description" => $row['description'],
+				"discount" => $row['discount'],
+				"start_date" => $row['start_date'],
+				"end_date" => $row['end_date'],
+				"status" => $status,
+				"action" => '<a href="javascript:void(0);" title="Klik untuk melakukan perubahan" data-id="'.$row['id'].'" class="mr-1" onclick="editPromo(this)"><i class="far fa-edit text-primary"></i></a><a href="javascript:void(0);" title="Klik untuk menghapus" data-id="'.$row['id'].'" onclick="deletePromo(this)"><i class="far fa-trash-alt text-danger"></i></a>'
 			];
 		}
 
