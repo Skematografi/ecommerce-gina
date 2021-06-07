@@ -57,8 +57,8 @@
     text-transform: uppercase;
 }
 .cr__btn a {
-    background: #000 none repeat scroll 0 0;
-    color: #fff;
+    background: #ffff00 none repeat scroll 0 0;
+    color: #000;
     display: inline-block;
     font-family: Poppins;
     font-size: 15px;
@@ -70,8 +70,8 @@
     transition: all 0.3s ease 0s;
 }
 .cr__btn a:hover {
-    background: #f9f862 none repeat scroll 0 0;
-    color: #000;
+    background: #000 none repeat scroll 0 0;
+    color: #fff;
 }
 .slide__thumb {
     text-align: right;

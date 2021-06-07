@@ -8,21 +8,21 @@ class Cart extends CI_Controller {
         parent::__construct();
         $this->load->library('cart');
         $this->load->model('Model_Cart');
+        $this->load->model('Model_Location');
     }
  
     public function index()
     {
-        $this->load->view('ecommerce/Shop_header');
-		$this->load->view('ecommerce/Shop_navbar');
+        $this->headTemplate();
         $data['produk']= $this->db->query('SELECT * FROM produk WHERE stok > 0')->result();
 		$this->load->view('ecommerce/product_grid',$data);
     }
 
     public function tampil_cart()
     {   
+        $data['member_id'] = $this->session->userdata('member_id');
+        $this->headTemplate();
         $data['produk'] = $this->Model_Cart->get_produk_all();
-        $this->load->view('ecommerce/Shop_header');
-		$this->load->view('ecommerce/Shop_navbar');
 		$this->load->view('ecommerce/cart',$data);
     }
  
@@ -45,8 +45,7 @@ class Cart extends CI_Controller {
         $id_pelanggan = $this->session->userdata('id_pelanggan');
         $data['profil'] = $this->db->get('pelanggan',['id_pelanggan' => $id_pelanggan])->result_array();
         $data['produk'] = $this->Model_Cart->get_produk_all();
-        $this->load->view('ecommerce/Shop_header');
-        $this->load->view('ecommerce/Shop_navbar');
+        $this->headTemplate();
         $this->load->view('ecommerce/check_out',$data);
     }
 
@@ -59,15 +58,40 @@ class Cart extends CI_Controller {
  
     function tambah()
     {
-        $data_produk= array('id' => $this->input->post('id'),
-                             'name' => $this->input->post('nama'),
-                             'price' => $this->input->post('harga'),
-                             'gambar' => $this->input->post('gambar'),
-                             'qty' =>$this->input->post('qty'),
-                             'stock' =>$this->input->post('stok')
-                            );
+        $code = $this->input->post('code');
+        $size = $this->input->post('size');
+        $data = array();
+
+        $sql = "SELECT a.id,a.name,a.price, a.stock, a.image
+                FROM products a WHERE a.code ='".$code."' AND a.size = '".$size."' LIMIT 1";
+
+        $query = $this->db->query($sql)->result();
+
+        foreach($query as $row){
+            $data = [
+                "id" => $row->id,
+                "name" => $row->name,
+                "price" => $row->price,
+                "image" => $row->image,
+                "stock" => $row->stock
+            ];
+        }
+
+        $data_produk= array('id' => $data['id'],
+                            'name' => $data['name'],
+                            'price' => $data['price'],
+                            'gambar' => $data['image'],
+                            'qty' => $this->input->post('quantity'),
+                            'size' => $this->input->post('size'),
+                            'stock' => $data['stock']
+                        );
+
         $this->cart->insert($data_produk);
-        redirect('cart');
+
+        $cart = $this->cart->contents();
+		$total_cart = count($cart);
+
+        echo json_encode(['success' => 'Produk berhasil dimasukan keranjang', 'total_cart' => $total_cart, 'link' => 'ecommerce/product_grid']);
     }
  
     function hapus($rowid)
@@ -188,12 +212,31 @@ class Cart extends CI_Controller {
 
     private function _thanks()
     {   
-        $this->load->view('ecommerce/Shop_header');
-        $this->load->view('ecommerce/Shop_navbar');
+        $this->headTemplate();
         $this->load->view('ecommerce/thanks');
     }
 
+    private function headTemplate(){
+		$cart = $this->cart->contents();
+		$data['total_cart'] = count($cart);
+		$this->load->view('ecommerce/Shop_header');
+		$this->load->view('ecommerce/Shop_navbar', $data);
+	}
 
+    public function getCityByState(){
 
+        $state_id = $this->input->post('state_id');
+        $data = $this->Model_Location->getCity($state_id);
+
+        echo json_encode($data);
+    }
+
+    public function getDistrictByCity(){
+
+        $city_id = $this->input->post('city_id');
+        $data = $this->Model_Location->getDistrict($city_id);
+
+        echo json_encode($data);
+    }
 
 }

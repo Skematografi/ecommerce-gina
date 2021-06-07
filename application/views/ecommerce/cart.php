@@ -15,6 +15,7 @@
                                             <th class="product-thumbnail">No.</th>
                                             <th class="product-thumbnail">Produk</th>
                                             <th class="product-name">Nama Produk</th>
+                                            <th class="product-name">Size</th>
                                             <th class="product-price">Harga</th>
                                             <th class="product-quantity">Jumlah</th>
                                             <th class="product-subtotal">Total</th>
@@ -34,6 +35,7 @@
                                             <input type="hidden" name="cart[<?php echo $item['id'];?>][id]" value="<?php echo $item['id'];?>" />
                                             <input type="hidden" name="cart[<?php echo $item['id'];?>][rowid]" value="<?php echo $item['rowid'];?>" />
                                             <input type="hidden" name="cart[<?php echo $item['id'];?>][name]" value="<?php echo $item['name'];?>" />
+                                            <input type="hidden" name="cart[<?php echo $item['id'];?>][size]" value="<?php echo $item['size'];?>" />
                                             <input type="hidden" name="cart[<?php echo $item['id'];?>][price]" value="<?php echo $item['price'];?>" />
                                             <input type="hidden" name="cart[<?php echo $item['id'];?>][gambar]" value="<?php echo $item['gambar'];?>" />
                                             <input type="hidden" name="cart[<?php echo $item['id'];?>][qty]" value="<?php echo $item['qty'];?>" />
@@ -44,18 +46,19 @@
                                             <td><?php echo $i++; ?></td>
                                             <td><img class="img-responsive" style="width: 100px; height: 100px;" src="<?php echo base_url() . 'assets/produk/'.$item['gambar']; ?>"/></td>
                                             <td><?php echo $item['name']; ?></td>
+                                            <td><?php echo $item['size']; ?></td>
                                             <td><?php echo number_format($item['price'], 0,",","."); ?></td>
                                             <td>
                                                 <input type="number" min="1" max="<?php echo $item['stock'];?>" class="form-control input-sm" id="jumlah" name="cart[<?php echo $item['id'];?>][qty]" value="<?php echo $item['qty'];?>" />
                                             </td>
                                             <td><?php echo number_format($item['subtotal'], 0,",",".") ?></td>
                                             <td>
-                                                <a href="<?php echo base_url()?>cart/hapus/<?php echo $item['rowid'];?>" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
+                                                <a href="<?php echo base_url()?>cart/hapus/<?php echo $item['rowid'];?>" title="Hapus produk dari keranjang" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
                                             </td>
                                             <?php endforeach; ?>
                                         </tr>
                                         <tr>
-                                            <td colspan="7">
+                                            <td colspan="8">
                                                 <b style="font-size: 18pt; font-family: helvetica; color: black;">Total : Rp <?php echo number_format($grand_total, 0,",","."); ?></b>
                                             </td>
                                         </tr>

@@ -18,39 +18,70 @@
                                     <div role="tabpanel" id="grid-view" class="single-grid-view tab-pane fade in active clearfix">
                                         <!-- Start Single Product -->
                                         <?php foreach ($produk as $item): ?>
-                                        <form action="<?php echo base_url(); ?>cart/tambah" method="post" accept-charset="utf-8">
-                                        <div class="col-md-4 col-lg-4 col-sm-6 col-xs-12" style="width:400px;">
-                                            <div class="category">  
-                                                <div class="ht__cat__thumb" style="border:1px solid black;">
-                                                    <a href="#">
-                                                        <img style="width: 200px; height: 200px;" src="<?php echo base_url();?>assets/produk/<?php echo $item->gambar;?>" alt="product images">
-                                                    </a>
-                                                    
-                                                </div>
-                                                <?php echo $item->deskripsi; ?>
-                                                <div class="fr__hover__info">
-                                                    <ul class="product__action">
-                                                        <li>
-                                                            <a>
-                                                                <button type="submit" class="swalDefaultSuccess" style="border: none; background-color: transparent;">
-                                                                    <i class="icon-handbag icons"></i>
-                                                                </button>
-                                                            </a>
-                                                        </li>
-                                                    </ul><br> 
-                                                    <strong style=" color: black;"><?php echo $item->nama_produk; ?></strong><br>
-                                                    <strong style="margin-right: 30px; font-size: 15pt; color: black;">Rp <?php echo number_format($item->harga); ?></strong>  
+                                            <!-- <form action="<?php echo base_url(); ?>cart/tambah" method="post" accept-charset="utf-8">
+                                            <div class="col-md-4 col-lg-4 col-sm-6 col-xs-12" style="width:400px;">
+                                                <div class="category">  
+                                                    <div class="ht__cat__thumb" style="border:1px solid black;">
+                                                        <a href="#">
+                                                            <img style="width: 200px; height: 200px;" src="<?php echo base_url();?>assets/produk/<?php echo $item->image;?>" alt="product images">
+                                                        </a>
+                                                        
+                                                    </div>
+                                                    <?php echo $item->description; ?>
+                                                    <div class="fr__hover__info">
+                                                        <ul class="product__action">
+                                                            <li>
+                                                                <a>
+                                                                    <button type="submit" class="swalDefaultSuccess" style="border: none; background-color: transparent;">
+                                                                        <i class="icon-handbag icons"></i>
+                                                                    </button>
+                                                                </a>
+                                                            </li>
+                                                        </ul><br> 
+                                                        <strong style=" color: black;"><?php echo $item->name; ?></strong><br>
+                                                        <strong style="margin-right: 30px; font-size: 15pt; color: black;">Rp <?php echo number_format($item->price); ?></strong>  
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <input type="hidden" name="id" value="<?php echo $item->id_produk; ?>" >
-                                        <input type="hidden" name="nama" value="<?php echo $item->nama_produk; ?>" >
-                                        <input type="hidden" name="gambar" value="<?php echo $item->gambar; ?>" >
-                                        <input type="hidden" name="harga" value="<?php echo $item->harga; ?>" > 
-                                        <input type="hidden" name="qty" value="1" >
+                                            <input type="hidden" name="id" value="<?php echo $item->code; ?>" >
+                                            <input type="hidden" name="nama" value="<?php echo $item->name; ?>" >
+                                            <input type="hidden" name="gambar" value="<?php echo $item->image; ?>" >
+                                            <input type="hidden" name="harga" value="<?php echo $item->price; ?>" > 
+                                            <input type="hidden" name="qty" value="1" >
 
-                                        <input type="hidden" name="stok" value="<?php echo $item->stok; ?>">
-                                        </form>
+                                            <input type="hidden" name="stok" value="<?php echo $item->s; ?>">
+                                            </form> -->
+                                            <form id="formDisplay" method="POST" action="<?php echo base_url(); ?>ecommerce/product_detail" >
+                                                <div class="col-md-4 col-lg-4 col-sm-6 col-xs-12">
+                                                    <div class="category">
+                                                        <div class="ht__cat__thumb">
+                                                        <button style="border: none;" type="submit">
+                                                            <a href="javascript:void(0);">
+                                                                <img src="<?php echo base_url();?>assets/produk/<?php echo $item->image;?>" alt="product images" style="width:350px; height:350px;">
+                                                            </a>
+                                                        </button>
+                                                        </div>
+                                                        <div class="fr__hover__info">
+                                                            <ul class="product__action">
+                                                                <li><button style="border: none;" type="submit"><a href="javascript:void(0);"><i class="icon-heart icons"></i></a></button></li>
+
+                                                                <!-- <li><a href="cart.html"><i class="icon-handbag icons"></i></a></li>
+
+                                                                <li><a href="#"><i class="icon-shuffle icons"></i></a></li> -->
+                                                            </ul>
+                                                        </div>
+                                                        <div class="fr__product__inner">
+                                                            <h4><?php echo $item->name; ?></h4>
+                                                            <ul class="fr__pro__prize">
+                                                                <li>Rp <?php echo number_format($item->price); ?></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="code" value="<?php echo $item->code; ?>" >
+                                                <input type="hidden" name="name" value="<?php echo $item->name; ?>" >
+                                                <input type="hidden" name="image" value="<?php echo $item->image; ?>" >
+                                            </form>
                                         <?php endforeach; ?>
                                         <!-- End Single Product -->
                                     </div>
@@ -59,19 +90,6 @@
                             </div>
                             <!-- End Product View -->
                         </div>
-                        <!-- Start Pagenation -->
-                        <!-- <div class="row">
-                            <div class="col-xs-12">
-                                <ul class="htc__pagenation">
-                                   <li><a href="#"><i class="zmdi zmdi-chevron-left"></i></a></li> 
-                                   <li><a href="#">1</a></li> 
-                                   <li class="active"><a href="#">3</a></li>   
-                                   <li><a href="#">19</a></li> 
-                                   <li><a href="#"><i class="zmdi zmdi-chevron-right"></i></a></li> 
-                                </ul>
-                            </div>
-                        </div> -->
-                        <!-- End Pagenation -->
                     </div>
                 </div>
             </div>
@@ -167,7 +185,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="copyright__inner">
-                                <p>Copyright© <a href="#">Toko Sinar Rangkasbitung</a> 2020. All right reserved.</p>
+                                <p>Copyright© <a href="#">Clothing Brand Colonizer.co</a> 2021. All right reserved.</p>
                             </div>
                         </div>
                     </div>

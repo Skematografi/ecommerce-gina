@@ -43,6 +43,7 @@
                                     </div>
                                     <div class="htc__shopping__cart">
                                         <a href="<?php echo base_url();?>cart/tampil_cart"><i class="icon-handbag icons"></i></a>
+                                        <a href="<?php echo base_url();?>cart/tampil_cart"><span class="htc__qua" id="total_cart"><?php echo $total_cart; ?></span></a>
                                     </div>
                                 </div>
                             </div>
