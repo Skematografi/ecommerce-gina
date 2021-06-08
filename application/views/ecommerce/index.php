@@ -28,55 +28,6 @@
             </div>
         </div>
         <!-- Start Slider Area -->
-        <!-- Start Top Rated Area -->
-        <section class="top__rated__area bg__white pt--100 pb--110">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="section__title--2 text-center">
-                            <h2 class="title__line">Produk Terbaru</h2>
-                            <p>Clothing Kualitas Terbaik</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt--20">
-                    <!-- Start Single Product -->
-                    <?php foreach ($terbaru as $row):?>
-                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-                        <div class="htc__best__product">
-                            <div class="htc__best__pro__thumb">
-                                <a href="#">
-                                    <img src="<?php echo base_url();?>assets/produk/<?php echo $row->gambar;?>" alt="small product">
-                                </a>
-                            </div>
-                            <div class="htc__best__product__details">
-                                <h2><a href="product-details.html"><?php echo $row->nama_produk;?></a></h2>
-                                <ul class="rating">
-                                    <li><i class="icon-star icons"></i></li>
-                                    <li><i class="icon-star icons"></i></li>
-                                    <li><i class="icon-star icons"></i></li>
-                                    <li class="old"><i class="icon-star icons"></i></li>
-                                    <li class="old"><i class="icon-star icons"></i></li>
-                                </ul>
-                                <ul  class="top__pro__prize">
-                                    <li>Rp <?php echo number_format($row->harga);?></li>
-                                </ul>
-                                <div class="best__product__action">
-                                    <ul class="product__action--dft">
-                                        <li><a href="#"><i class="icon-heart icons"></i></a></li>
-                                        <li><a href="cart.html"><i class="icon-handbag icons"></i></a></li>
-                                        <li><a href="#"><i class="icon-shuffle icons"></i></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <?php endforeach?>
-                    <!-- End Single Product -->
-                </div>
-            </div>
-        </section>
-        <!-- End Top Rated Area -->
         <!-- Start Brand Area -->
         <div class="htc__brand__area bg__cat--4">
             <div class="container">

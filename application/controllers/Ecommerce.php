@@ -14,7 +14,7 @@ class Ecommerce extends CI_Controller {
 	public function index()
 	{
 		$this->headTemplate();
-		$data['terbaru']=$this->db->query('SELECT * FROM produk ORDER BY id_produk DESC LIMIT 3')->result();
+		$data['terbaru']=$this->db->query('SELECT * FROM products ORDER BY created_at DESC LIMIT 3')->result();
 		$this->load->view('ecommerce/index',$data);
 		$this->load->view('ecommerce/Shop_footer');
 			

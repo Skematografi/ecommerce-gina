@@ -4,7 +4,7 @@
                 <div class="row">
                     <div class="col-md-12 text-center">
                          <h1>Terima kasih telah berbelanja</h1><br>
-                         <p>mohon tunggu SMS dari admin untuk waktu pengiriman barang.</p>
+                         <p>Silahkan cek E-Mail anda untuk melakukan pembayaran.</p>
                     </div>
                 </div>
             </div>
@@ -13,77 +13,61 @@
     </div>
 
     <footer id="htc__footer">
-            <!-- Start Footer Widget -->
-            <div class="footer__container bg__cat--1">
-                <div class="container">
-                    <div class="row">
-                        <!-- Start Single Footer Widget -->
-                        <div class="col-md-3 col-sm-2">
-                            <div class="footer">
-                                <h2 class="title__line--2">Tentang</h2>
-                                <div class="ft__details">
-                                    <p>Website penjualan barang rumah tangga.</p>
-                                    <div class="ft__social__link">
-                                        <ul class="social__link">
-                                            <li><a href="#"><i class="icon-social-twitter icons"></i></a></li>
-
-                                            <li><a href="#"><i class="icon-social-instagram icons"></i></a></li>
-
-                                            <li><a href="#"><i class="icon-social-facebook icons"></i></a></li>
-
-                                        </ul>
-                                    </div>
-                                </div>
+        <!-- Start Footer Widget -->
+        <div class="footer__container bg__cat--1">
+            <div class="container">
+                <div class="row">
+                    <!-- Start Single Footer Widget -->
+                    <div class="col-md-3 col-sm-2">
+                        <div class="footer">
+                            <h2 class="title__line--2">Kontak</h2>
+                            <div class="ft__details">
+                                <p>Telepon :  0821-2345-9695</p>
+                                <p>Instagram :  @colonizer.co</p>
                             </div>
                         </div>
-                        <!-- End Single Footer Widget -->
-                        <!-- Start Single Footer Widget -->
-                        <div class="col-md-2 col-sm-6 col-xs-12 xmt-40">
-                            <div class="footer">
-                                <h2 class="title__line--2">informasi</h2>
-                                <div class="ft__inner">
-                                    <ul class="ft__list">
-                                        <li><a href="#">Informasi Pengiriman</a></li>
-                                        <li><a href="#">Privacy & Policy</a></li>
-                                        <li><a href="#">Terms  & Condition</a></li>
-                                    </ul>
-                                </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-2">
+                        <div class="footer">
+                            <h2 class="title__line--2">Alamat</h2>
+                            <div class="ft__details">
+                                <p> Jl. Kp. Pengkolan, RT.04/RW.01, Pasir Gadung, Kec. Cikupa Tangerang Banten 15710</p>
                             </div>
                         </div>
-                        <!-- End Single Footer Widget -->
-                         <!-- Start Single Footer Widget -->
-                        <div class="col-md-3 col-sm-6 col-xs-12 xmt-40 smt-40">
-                            <div class="footer">
-                                <h2 class="title__line--2">NEWSLETTER </h2>
-                                <div class="ft__inner">
-                                    <div class="news__input">
-                                        <input type="text" placeholder="Your Mail*">
-                                        <div class="send__btn">
-                                            <a class="fr__btn" href="#">Send Mail</a>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
+                    </div>
+                    <!-- End Single Footer Widget -->
+                    <!-- Start Single Footer Widget -->
+                    <div class="col-md-3 col-sm-6 col-xs-12 xmt-40">
+                        <div class="footer">
+                            <h2 class="title__line--2">informasi</h2>
+                            <div class="ft__inner">
+                                <ul class="ft__list">
+                                    <li><a href="#">Informasi Pengiriman</a></li>
+                                    <li><a href="#">Privacy & Policy</a></li>
+                                    <li><a href="#">Terms  & Condition</a></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- End Footer Widget -->
-            <!-- Start Copyright Area -->
-            <div class="htc__copyright bg__cat--5">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="copyright__inner">
-                                <p>Copyright© <a href="#">Toko Sinar Rangkasbitung</a> 2020. All right reserved.</p>
-                            </div>
+        </div>
+        <!-- End Footer Widget -->
+        <!-- Start Copyright Area -->
+        <div class="htc__copyright bg__cat--5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="copyright__inner">
+                            <p>Copyright© <a href="javascript:void(0);">Clothing Brand Colonizer.co</a> 2021. All right reserved.</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- End Copyright Area -->
-        </footer>
+        </div>
+        <!-- End Copyright Area -->
+    </footer>
         <!-- End Footer Style -->
     </div>
     <!-- Body main wrapper end -->

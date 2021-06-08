@@ -19,7 +19,9 @@ if ($cart = $this->cart->contents()){
                 <div class="row" style="margin : auto; padding: 5px; ">
                     <div class="col-md-12">
                         <form action="<?php echo base_url()?>cart/proses_order" method="post" autocomplete="off">
-                            <input type="hidden" name="member_id" id="member_id" maxlength="50" value="<?php echo ($member_id == '' ? '' : $member_id) ; ?>" required>
+                            <input type="hidden" name="member_id" id="member_id" value="<?php echo ($member_id == '' ? '' : $member_id) ; ?>">
+                            <input type="hidden" name="discount_member" id="discount_member" value="0">
+                            <input type="hidden" name="discount_voucher" id="discount_voucher" value="0">
 
                             <div class="row">
                                 <div class="htc__cart__total">
@@ -81,7 +83,7 @@ if ($cart = $this->cart->contents()){
                                 <div class="col-sm-12"> 
                                     <div class="form-group">
                                         <label>Alamat</label>
-                                        <textarea style="background-color: white; border-color: black;" name="alamat" id="alamat" required></textarea>
+                                        <textarea style="background-color: white; border-color: black;" name="address" id="address" required></textarea>
                                     </div>
                                 </div> 
                             </div>
@@ -103,7 +105,7 @@ if ($cart = $this->cart->contents()){
                                         <li class="text-right">Rp <input type="text" style="border: none; float: right; text-align: right; width: 100px;" id="ongkir" name="ongkir" readonly required></li>
                                         <?php
                                             if($member_id != ''){
-                                                echo '<li class="text-right"><input type="text" style="border: none; float: right; text-align: right; width: 100px;" id="discount" name="discount" value="Potongan 5%" readonly required></li>';
+                                                echo '<li class="text-right"><input type="text" style="color:gray; border: none; float: right; text-align: right; width: 500px;" id="discount" name="discount" value="Potongan 5% Dengan Min. Belanja Rp 500.000" readonly required></li>';
                                             }
                                         ?>
                                         
@@ -234,9 +236,14 @@ if ($cart = $this->cart->contents()){
                     if(member_id == ''){
                         $('#total').val(cost+grand_total);
                     } else {
-                       let discount = (grand_total/100) * 5;
-                       let total_after_discount = grand_total - discount;
-                       $('#total').val(cost+total_after_discount);
+                        if(grand_total >= 500000){
+                            let discount = (grand_total/100) * 5;
+                            let total_after_discount = grand_total - discount;
+                            $('#discount_member').val(discount);
+                            $('#total').val(cost+total_after_discount);
+                        } else {
+                            $('#total').val(cost+grand_total);
+                        }
 
                     }
 

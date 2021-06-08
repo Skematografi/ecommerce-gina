@@ -6,7 +6,7 @@ class Cart extends CI_Controller {
 	public function __construct()
     {
         parent::__construct();
-        $this->load->library('cart');
+        $this->load->library('cart', 'email');
         $this->load->model('Model_Cart');
         $this->load->model('Model_Location');
     }
@@ -50,8 +50,6 @@ class Cart extends CI_Controller {
     }
 
     public function pembayaran(){
-        $id_pelanggan = $this->session->userdata('id_pelanggan');
-        $data['profil']=$this->db->query("SELECT id_pelanggan AS id FROM pelanggan WHERE id_pelanggan='$id_pelanggan' ")->row();
         $data['produk'] = $this->Model_Cart->get_produk_all();
         $this->load->view('ecommerce/check_out',$data);
     }
@@ -132,86 +130,71 @@ class Cart extends CI_Controller {
     public function proses_order()
     {
         //-------------------------Input data pesanan--------------------------
-        $id_order=$this->Model_Cart->id_order();
-        $proses=1;
-        $status=$this->session->userdata('status');
+        $phone = $this->input->post('phone');
+        $code=$this->Model_Cart->generateRandomString(4,$phone);
 
-        if($status == 0){
+        $now = new DateTime();
+        $now->modify("+1 day");
+        $next_day = $now->format("Y-m-d H:i:s");
 
-            $data_order = array(
-                                'id_pesanan' => $id_order,
-                                'tanggal' => date('Y-m-d'),
-                                'nama_pelanggan' => $this->input->post('nama'),
-                                'telpon_pelanggan' => $this->input->post('telpon'),
-                                'kabupaten' => $this->input->post('kabupaten'),
-                                'kecamatan' => $this->input->post('kecamatan'),
-                                'alamat' => $this->input->post('alamat'),
-                                'total' => $this->input->post('total'),
-                                'ongkir' => $this->input->post('ongkir'),
-                                'status' => $proses
-                            );
+        $data_order = array(
+                            'code' => $code,
+                            'member_id' => $this->input->post('member_id'),
+                            'name' => $this->input->post('name'),
+                            'email' => $this->input->post('email'),
+                            'phone' => $phone,
+                            'state' => $this->input->post('state'),
+                            'city' => $this->input->post('city'),
+                            'district' => $this->input->post('district'),
+                            'address' => $this->input->post('address'),
+                            'shipping_cost' => $this->input->post('ongkir'),
+                            'total_price' => $this->input->post('total'),
+                            'expired_date' => $next_day,
+                            'discount_member' => $this->input->post('discount_member'),
+                            'discount_voucher' => $this->input->post('discount_voucher'),
+                            'invoice' => 'INV/'.date('Ymd').'/'.substr($code,-4)
+                        );
 
-            $this->db->insert('pesanan',$data_order);
+        $this->db->insert('orders',$data_order);
+        $insert_id = $this->db->insert_id();
 
-            //-------------------------Input data detail order-----------------------
-            if ($cart = $this->cart->contents())
-                {
-                    foreach ($cart as $item)
-                        {   
-                            $data_detail = array(
-                                            'id_pesanan' => $id_order,
-                                            'id_produk' => $item['id'],
-                                            'harga' => $item['price'],
-                                            'jumlah' => $item['qty']
-                                        );
-                           /* $where = array('id_produk' => $item['id']);
-                            $this->db->where($where,'produk');
-                            $this->db->get('produk')*/
-                            $this->db->insert('detail_pesanan',$data_detail);
-                        }
-                }
-            $this->cart->destroy();
-            $this->_thanks();
-        }else{
+        //-------------------------Input data detail order-----------------------
+        if ($cart = $this->cart->contents())
+            {
+                foreach ($cart as $item)
+                    {   
+                        $data_detail = array(
+                                        'order_id' => $insert_id,
+                                        'product_id' => $item['id'],
+                                        'price' => $item['price'],
+                                        'quantity' => $item['qty']
+                                    );
+                        $this->db->insert('order_details',$data_detail);
+                    }
+            }
+        
+        $dataForEmail = [
+            'code' => $code,
+            'total' =>  $this->input->post('total'),
+            'address' =>  $this->input->post('state')." ".$this->input->post('city')." ".$this->input->post('district')." ".$this->input->post('address'),
+            'name' => $this->input->post('name'),
+            'email' => $this->input->post('email'),
+            'expired_date' => $next_day,
+            'shipping_cost' => $this->input->post('ongkir'),
+            'discount_member' => $this->input->post('discount_member'),
+            'discount_voucher' => $this->input->post('discount_voucher'),
+            'invoice' => 'INV/'.date('Ymd').'/'.substr($code,-4)
+        ];
 
-            $data_order = array(
-                                'id_pesanan' => $id_order,
-                                'id_pelanggan' => $this->input->post('id_pelanggan'),
-                                'tanggal' => date('Y-m-d'),
-                                'nama_pelanggan' => $this->input->post('nama'),
-                                'telpon_pelanggan' => $this->input->post('telpon'),
-                                'kabupaten' => $this->input->post('kabupaten'),
-                                'kecamatan' => $this->input->post('kecamatan'),
-                                'alamat' => $this->input->post('alamat'),
-                                'total' => $this->input->post('total'),
-                                'ongkir' => $this->input->post('ongkir'),
-                                'status' => $proses
-                            );
+        $this->sendEmailPayment($dataForEmail);
 
-            $this->db->insert('pesanan',$data_order);
-
-            //-------------------------Input data detail order-----------------------
-            if ($cart = $this->cart->contents())
-                {
-                    foreach ($cart as $item)
-                        {
-                            $data_detail = array(
-                                            'id_pesanan' => $id_order,
-                                            'id_produk' => $item['id'],
-                                            'harga' => $item['price'],
-                                            'jumlah' => $item['qty']
-                                        );
-                            $this->db->insert('detail_pesanan',$data_detail);
-                        }
-                }
-            $this->cart->destroy();
-            $this->_thanks();
-        }
+        $this->cart->destroy();
+        redirect('cart/thanks', 'refresh');
 
     }
 
-    private function _thanks()
-    {   
+    public function thanks()
+    {           
         $this->headTemplate();
         $this->load->view('ecommerce/thanks');
     }
@@ -237,6 +220,37 @@ class Cart extends CI_Controller {
         $data = $this->Model_Location->getDistrict($city_id);
 
         echo json_encode($data);
+    }
+
+    private function sendEmailPayment($order){
+
+        $this->email->from('admin@colornizer.co', 'Colornizer.co');
+		$this->email->to($order['email']);
+ 
+		$this->email->subject('Colornizer.co');
+
+        $product = array();
+        if ($cart = $this->cart->contents()){
+            foreach ($cart as $item){   
+                $product[] = array(
+                                'name' => $item['name'],
+                                'image' => $item['gambar'],
+                                'size' => $item['size'],
+                                'price' => $item['price'],
+                                'quantity' => $item['qty']
+                            );
+            }
+        }
+
+        $data = [
+            'order' => $order,
+            'products' => $product
+        ];
+        
+        $this->email->message($this->load->view('template_email/invoice',$data, true));
+
+		$this->email->set_mailtype('html');
+		$this->email->send();
     }
 
 }

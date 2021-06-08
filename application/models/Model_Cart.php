@@ -27,5 +27,16 @@ class  Model_Cart extends CI_Model {
         $query = $this->db->get('produk');
         return $query->result_array();
     }
+
+    public function generateRandomString($length = 10, $phone) {
+        $characters = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+
+        return $phone.$randomString;
+    }
  
 }
