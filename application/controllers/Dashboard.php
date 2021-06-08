@@ -9,9 +9,8 @@ class Dashboard extends CI_Controller {
 		$this->load->model('Model_Promo');
 		$this->load->model('Model_Pelanggan');
 		$this->load->helper(array('form', 'url'));
-		$ver=$this->session->userdata('status');
-		$ver2=$this->session->userdata('id_role');
-		if($ver == 0 || $ver2 == 2){
+		$ver2=$this->session->userdata('role_id');
+		if($ver2 == 2){
 			redirect('ecommerce');
 		}
 	}
