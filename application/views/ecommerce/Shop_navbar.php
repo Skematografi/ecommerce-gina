@@ -17,9 +17,15 @@
                                 <nav class="main__menu__nav hidden-xs hidden-sm">
                                     <ul class="main__menu">
                                         <li class="drop"><a href="<?php echo base_url();?>">Home</a></li>
-                                        <li class="drop"><a href="<?php echo base_url();?>ecommerce/product_grid">Produk</a>
-                                        </li>
-                                        <li><a href="<?php echo base_url();?>ecommerce/contact">Konfirmasi Pembayaran</a></li>
+                                        <li class="drop"><a href="<?php echo base_url();?>ecommerce/product_grid">Produk</a></li>
+                                        <li><a href="<?php echo base_url();?>ecommerce/confirmation">Konfirmasi Pembayaran</a></li>
+                                        <?php
+                                            $member_id = $this->session->userdata('member_id');
+                                            if($member_id != ''){
+                                                echo '<li><a href="'.base_url().'ecommerce/history">Riwayat Belanja</a></li>';
+                                            }
+                                        ?>
+                                        
                                     </ul>
                                 </nav>
 
@@ -28,7 +34,13 @@
                                         <ul>
                                             <li><a href="<?php echo base_url();?>">Home</a></li>
                                             <li><a href="<?php echo base_url();?>ecommerce/product_grid">Produk</a></li>
-                                            <li><a href="<?php echo base_url();?>ecommerce/contact">Konfirmasi Pembayaran</a></li>
+                                            <li><a href="<?php echo base_url();?>ecommerce/confirmation">Konfirmasi Pembayaran</a></li>
+                                            <?php
+                                                $member_id = $this->session->userdata('member_id');
+                                                if($member_id != ''){
+                                                    echo '<li><a href="'.base_url().'ecommerce/history">Riwayat Belanja</a></li>';
+                                                }
+                                            ?>
                                         </ul>
                                     </nav>
                                 </div>  

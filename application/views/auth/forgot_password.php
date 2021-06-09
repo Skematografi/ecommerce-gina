@@ -6,9 +6,9 @@
       <img src="<?php echo base_url();?>assets/images/logo/logo.png" alt="AdminLTE Logo" class="brand-image mb-3 mx-auto d-block" style=" width:200px; height:70px; opacity: .8;">
       <p class="login-box-msg">Lupa password? Buat password baru disini.</p>
 
-      <form action="#" method="post" autocomplete="off">
+      <form action="<?php echo base_url();?>" method="post" autocomplete="off">
         <div class="input-group mb-3">
-          <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+          <input type="email" class="form-control" name="email" id="email" placeholder="Email" required>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>

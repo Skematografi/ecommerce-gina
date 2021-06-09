@@ -53,12 +53,51 @@ class Ecommerce extends CI_Controller {
 
 	}
 
-	public function contact()
+	public function confirmation()
 	{
 		$this->headTemplate();
-		$this->load->view('ecommerce/contact');
+		$this->load->view('ecommerce/confirmation');
 		$this->load->view('ecommerce/Shop_footer');
+	}
 
+	public function confirmation_payment(){
+		$code = strtoupper($this->input->post('code'));
+		$email = $this->input->post('email');
+		$nominal = $this->input->post('nominal');
+		$account_number = $this->input->post('account_number');
+		$account_name = $this->input->post('account_name');
+
+		$get_order = "SELECT id, status FROM orders WHERE code = '".$code."'
+						AND email = '".$email."'
+						AND total_price = '".$nominal."'";
+
+		$order = $this->db->query($get_order)->row();
+
+		if($order == NULL){
+			$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Transaksi tidak ditemukan</div>');
+			redirect('ecommerce/confirmation');
+		} elseif($order->status == 'Kadaluarsa'){
+			$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Transaksi sudah kadaluarsa</div>');
+			redirect('ecommerce/confirmation');
+		}
+
+		$evidence_transfer = $this->do_upload();
+
+		$update_order = "UPDATE orders a SET a.account_number = '".$account_number."', a.account_name = '".$account_name."', a.evidence_transfer = '".$evidence_transfer."', a.status = 'Menunggu Verifikasi' WHERE a.id = '".$order->id."'";
+
+		$this->db->query($update_order);
+
+		$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Konfirmasi berhasil dilakukan, dalam 1x24 Jam admin akan mengirim E-Mail verifikasi pembayaran</div>');
+		redirect('ecommerce/confirmation');
+	}
+
+	public function history()
+	{
+		$this->headTemplate();
+		$member_id = $this->session->userdata('member_id');
+		$data['riwayat'] = $this->db->query("SELECT created_at, code, total_price, status, resi  from orders where member_id = '".$member_id."' ")->result_array();
+		$this->load->view('ecommerce/history', $data);
+		$this->load->view('ecommerce/Shop_footer');
 	}
 
 	private function headTemplate(){
@@ -113,6 +152,24 @@ class Ecommerce extends CI_Controller {
 		}
 
 
+	}
+
+	private function do_upload(){
+
+    	$config['upload_path'] = './assets/struk/';
+    	$config['allowed_types'] = 'jpg|png|JPEG';
+    	$config['max_size'] = 1048;
+
+    	$this->upload->initialize($config);
+		$this->load->library('upload');
+
+		if (!$this->upload->do_upload('evidence_transfer')) {
+			$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Struk gagal diupload</div>');
+			redirect('ecommerce/confirmation');
+		}
+
+		$file = $this->upload->data();
+		return $file['file_name'];
 	}
 
 }

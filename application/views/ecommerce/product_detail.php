@@ -97,32 +97,15 @@
         </section>
         <!-- End Product Grid -->
         <!-- Start Brand Area -->
-        <div class="htc__brand__area bg__cat--4">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="ht__brand__inner">
-                            <ul class="brand__list owl-carousel clearfix">
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/1.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/2.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/3.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/4.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/5.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/5.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/1.png" alt="brand images"></a></li>
-                                <li><a href="#"><img src="<?php echo base_url();?>assets/images/brand/2.png" alt="brand images"></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- End Brand Area -->
     </div>
 
+        
+    <a href="https://api.whatsapp.com/send?phone=6285157552214&text=Hallo%20Agan%20Colonizer.co" target="_blank" class="icon-whatsapp">
+        <img src="<?php echo base_url();?>assets/images/logo/whatsapp.png" alt="icon whatsapp" id="whatsapp" >
+    </a>
 
-
- <footer id="htc__footer">
+    <footer id="htc__footer" style="margin-top: 100px;">
             <!-- Start Footer Widget -->
             <div class="footer__container bg__cat--1">
                 <div class="container">
@@ -130,25 +113,25 @@
                         <!-- Start Single Footer Widget -->
                         <div class="col-md-3 col-sm-2">
                             <div class="footer">
-                                <h2 class="title__line--2">Tentang</h2>
+                                <h2 class="title__line--2">Kontak</h2>
                                 <div class="ft__details">
-                                    <p>Website penjualan barang rumah tangga.</p>
-                                    <div class="ft__social__link">
-                                        <ul class="social__link">
-                                            <li><a href="#"><i class="icon-social-twitter icons"></i></a></li>
+                                    <p>Telepon :  0821-2345-9695</p>
+                                    <p>Instagram :  @colonizer.co</p>
+                                </div>
+                            </div>
+                        </div>
 
-                                            <li><a href="#"><i class="icon-social-instagram icons"></i></a></li>
-
-                                            <li><a href="#"><i class="icon-social-facebook icons"></i></a></li>
-
-                                        </ul>
-                                    </div>
+                        <div class="col-md-3 col-sm-2">
+                            <div class="footer">
+                                <h2 class="title__line--2">Alamat</h2>
+                                <div class="ft__details">
+                                    <p> Jl. Kp. Pengkolan, RT.04/RW.01, Pasir Gadung, Kec. Cikupa Tangerang Banten 15710</p>
                                 </div>
                             </div>
                         </div>
                         <!-- End Single Footer Widget -->
                         <!-- Start Single Footer Widget -->
-                        <div class="col-md-2 col-sm-6 col-xs-12 xmt-40">
+                        <div class="col-md-3 col-sm-6 col-xs-12 xmt-40">
                             <div class="footer">
                                 <h2 class="title__line--2">informasi</h2>
                                 <div class="ft__inner">
@@ -157,22 +140,6 @@
                                         <li><a href="#">Privacy & Policy</a></li>
                                         <li><a href="#">Terms  & Condition</a></li>
                                     </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End Single Footer Widget -->
-                         <!-- Start Single Footer Widget -->
-                        <div class="col-md-3 col-sm-6 col-xs-12 xmt-40 smt-40">
-                            <div class="footer">
-                                <h2 class="title__line--2">NEWSLETTER </h2>
-                                <div class="ft__inner">
-                                    <div class="news__input">
-                                        <input type="text" placeholder="Your Mail*">
-                                        <div class="send__btn">
-                                            <a class="fr__btn" href="#">Send Mail</a>
-                                        </div>
-                                    </div>
-                                    
                                 </div>
                             </div>
                         </div>
@@ -186,7 +153,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="copyright__inner">
-                                <p>Copyright© <a href="#">Clothing Brand Colonizer.co</a> 2021. All right reserved.</p>
+                                <p>Copyright© <a href="javascript:void(0);">Clothing Brand Colonizer.co</a> 2021. All right reserved.</p>
                             </div>
                         </div>
                     </div>

@@ -28,23 +28,7 @@ class Cart extends CI_Controller {
  
     public function check_out()
     {   
-        $id_produk = $this->input->post('id_produk');
-        $sisa = $this->input->post('sisa');
-
-        $updata_prod=[
-            'stok' => $sisa
-        ];
-    
-        $where=[
-            'id_produk' => $id_produk
-        ];
-
-        $this->db->where($where);
-        $this->db->update('produk',$updata_prod);
-
-        $id_pelanggan = $this->session->userdata('id_pelanggan');
-        $data['profil'] = $this->db->get('pelanggan',['id_pelanggan' => $id_pelanggan])->result_array();
-        $data['produk'] = $this->Model_Cart->get_produk_all();
+       $data['produk'] = $this->Model_Cart->get_produk_all();
         $this->headTemplate();
         $this->load->view('ecommerce/check_out',$data);
     }
@@ -176,9 +160,10 @@ class Cart extends CI_Controller {
         $dataForEmail = [
             'code' => $code,
             'total' =>  $this->input->post('total'),
-            'address' =>  $this->input->post('state')." ".$this->input->post('city')." ".$this->input->post('district')." ".$this->input->post('address'),
+            'address' =>  $this->input->post('address')."\n".$this->input->post('district').", ".$this->input->post('city').", ".$this->input->post('state'),
             'name' => $this->input->post('name'),
             'email' => $this->input->post('email'),
+            'phone' => $phone,
             'expired_date' => $next_day,
             'shipping_cost' => $this->input->post('ongkir'),
             'discount_member' => $this->input->post('discount_member'),
@@ -227,7 +212,7 @@ class Cart extends CI_Controller {
         $this->email->from('admin@colornizer.co', 'Colornizer.co');
 		$this->email->to($order['email']);
  
-		$this->email->subject('Colornizer.co');
+		$this->email->subject('Colonizer.co');
 
         $product = array();
         if ($cart = $this->cart->contents()){

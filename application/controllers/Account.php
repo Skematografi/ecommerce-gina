@@ -5,8 +5,10 @@ class Account extends CI_Controller {
 
 	function __construct(){
 		parent::__construct();
-		$ver=$this->session->userdata('status');
-		if($ver == 0){
+		$this->load->library('cart');
+		$this->load->model('Model_Location');
+		$ver=$this->session->userdata('member_id');
+		if($ver == ''){
 			redirect('auth');
 		}
 	}
@@ -14,69 +16,70 @@ class Account extends CI_Controller {
 
 	public function index()
 	{
-		$id_pelanggan = $this->session->userdata('id_pelanggan');
-		$data['profil']=$this->db->query("
-	    		SELECT * FROM pelanggan
-				JOIN user
-				ON user.email = pelanggan.email
-				WHERE pelanggan.id_pelanggan = '$id_pelanggan'
-	    	")->result_array();
-		$this->load->view('ecommerce/Shop_header');
-		$this->load->view('ecommerce/Shop_navbar');
+		$member_id = $this->session->userdata('member_id');
+		$data['profil']=$this->db->query("SELECT * FROM members WHERE id = '$member_id'")->row();
+		$data['locations'] = $this->Model_Location->getState();
+		$this->headTemplate();
 		$this->load->view('ecommerce/account',$data);
 		$this->load->view('ecommerce/Shop_footer');
 	}
 
 	public function update(){
-		$id_user=$this->input->post('id_user',true);
-		$id_pel=$this->input->post('id_pelanggan',true);
-		$nama = htmlspecialchars($this->input->post("nama", true));
-		$jk = $this->input->post("jenis_kelamin", true);
+		$member_id = $this->session->userdata('member_id');
+		$user_id = $this->session->userdata('user_id');
+		$nama = htmlspecialchars($this->input->post("name", true));
+		$jk = $this->input->post("gender", true);
 		$email = $this->input->post("email", true);
         $pwd = $this->input->post("password", true);
-        $tlp = $this->input->post("telpon", true);
-        $prov = $this->input->post("provinsi", true);
-        $kab = $this->input->post("kabupaten", true);
-        $kec = $this->input->post("kecamatan", true);
-        $pos = $this->input->post("kode_pos", true);
-        $alamat = $this->input->post("alamat", true);
+        $tlp = $this->input->post("phone", true);
+        $prov = $this->input->post("state", true);
+        $kab = $this->input->post("city", true);
+        $kec = $this->input->post("district", true);
+        $pos = $this->input->post("postal_code", true);
+        $alamat = $this->input->post("address", true);
 
 		$data_user=[
-			'nama' => $nama,
 			'email' => $email,
 			'password' => password_hash($pwd, PASSWORD_BCRYPT)
 		];
 
 		$where = array(
-			'id_user' => $id_user
+			'id' => $user_id
 		);
 
 		$this->db->where($where);
-		$this->db->update('user',$data_user);
+		$this->db->update('users',$data_user);
 
 
 		$data_pel=[
-			'nama' => $nama,
-			'jenis_kelamin' => $jk,
+			'name' => $nama,
+			'gender' => $jk,
 			'email' => $email,
-			'telpon' => $tlp,
-			'alamat' => $alamat,
-			'provinsi' => $prov,
-			'kabupaten' => $kab,
-			'kecamatan' => $kec,
-			'kode_pos' => $pos
+			'phone' => $tlp,
+			'address' => $alamat,
+			'state' => $prov,
+			'city' => $kab,
+			'district' => $kec,
+			'postal_code' => $pos
 		];
 
 		$where = array(
-			'id_pelanggan' => $id_pel
+			'id' => $member_id
 		);
 
 		$this->db->where($where);
-		$this->db->update('pelanggan',$data_pel);
+		$this->db->update('members',$data_pel);
 
 
-		$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Profil berhasil di update</div>');
-		redirect('account');
+		$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Profil berhasil diupdate</div>');
+
+	}
+
+	private function headTemplate(){
+		$cart = $this->cart->contents();
+		$data['total_cart'] = count($cart);
+		$this->load->view('ecommerce/Shop_header');
+		$this->load->view('ecommerce/Shop_navbar', $data);
 	}
 
 

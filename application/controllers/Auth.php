@@ -40,6 +40,7 @@ class Auth extends CI_Controller {
 	    				'email' => $user['email'],
 	    				'password' => $user['password'],
 	    				'name' => $user['name'],
+	    				'user_id' => $user['user_id'],
 	    				'member_id' => $user['id']
 
 	    			];
@@ -73,6 +74,7 @@ class Auth extends CI_Controller {
 		$this->session->unset_userdata('email');
 		$this->session->unset_userdata('password');
 		$this->session->unset_userdata('name');
+		$this->session->unset_userdata('user_id');
 		$this->session->unset_userdata('member_id');
 
 		$this->session->set_flashdata('msg','<div class="alert alert-success" role="alert">Anda telah berhasil keluar.</div>');

@@ -45,7 +45,7 @@ class Dashboard extends CI_Controller {
     public function do_upload(){
 
     	$config['upload_path'] = './assets/produk/';
-    	$config['allowed_types'] = 'gif|jpg|png|JPEG';
+    	$config['allowed_types'] = 'jpg|png|JPEG';
     	$config['max_size'] = 2048;
 
     	$this->upload->initialize($config);

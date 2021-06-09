@@ -31,6 +31,11 @@
     <hr><br/>
         <table border="0">
             <tr>
+                <td>Kode Transaksi</td>
+                <td>:</td>
+                <td><b><?= $order['code'];?></b></td>
+            </tr>
+            <tr>
                 <td>Total Bayar</td>
                 <td>:</td>
                 <td><b style="color:red;">Rp <?= number_format($order['total']); ?></b></td>
@@ -110,6 +115,10 @@
                 <td><b>Rp <?= number_format($order['total']); ?></b></td>
             </tr>
         </table>
-
+        <hr>
+        <h3>Alamat Pengiriman </h3>
+        <p><?= $order['name'];?></p>
+        <p><?= $order['address'];?></p>
+        <p><?= $order['phone'];?></p>
 </body>
 </html>
