@@ -99,6 +99,11 @@
     $('#order_id').val(id);
   }
 
+  function cancelOrder(ele){
+    let id = $(ele).attr('data-id');
+    $('#order_id_tolak').val(id);
+  }
+
   function showStruck(ele){
     let img = $(ele).attr('data-struck');
     $('#img_struck').attr('src', '<?= base_url(); ?>assets/struk/'+img)

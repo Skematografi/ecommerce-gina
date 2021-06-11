@@ -16,8 +16,6 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="<?php echo base_url();?>assets/dist/css/adminlte.min.css">
 
-  <!-- Google Font: Source Sans Pro -->
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
 <body>
 <div class="wrapper">
@@ -72,22 +70,6 @@
           </tr>
           </thead>
           <tbody>
-            <?php foreach($pesanan as $row): $i=1; ?>
-            <tr>
-              <td><?php echo $i++; ?></td>
-              <td><?php echo $row->id_pesanan; ?></td>
-              <td><?php echo $row->tanggal; ?></td>
-              <td><?php echo $row->id_pelanggan; ?></td>
-              <td><?php echo $row->nama_pelanggan; ?></td>
-              <td><?php echo $row->telpon_pelanggan; ?></td>
-              <td><?php echo $row->alamat; ?></td>
-              <td><?php echo $row->id_produk; ?></td>
-              <td><?php echo $row->jumlah; ?></td>
-              <td><?php echo $row->harga; ?></td>
-              <td><?php echo $row->ongkir; ?></td>
-              <td><?php echo $row->total; ?></td>
-            </tr>
-            <?php endforeach; ?>
           </tbody>
         </table>
       </div>
@@ -105,7 +87,7 @@
           <table class="table" style="font-size: 18pt;">
             <tr>
               <th>Total :</th>
-              <td style="text-align: right;">Rp <?php echo number_format($total->penjualan); ?></td>
+              <td style="text-align: right;">Rp 10000000</td>
             </tr>
           </table>
       </div>

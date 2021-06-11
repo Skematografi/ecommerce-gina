@@ -45,7 +45,7 @@
                         <td class="text-center"><?php echo $i++; ?></td>
                         <td><?php echo $row['code']; ?></td>
                         <td><?php echo $row['name']; ?></td>
-                        <td><?php echo $row['description']; ?></td>
+                        <td><?php echo str_replace(',','<br>',$row['description']); ?></td>
                         <td><?php echo $row['category']; ?></td>
                         <td class="text-center"><img src="<?php echo base_url();?>assets/produk/<?php echo $row['image'];?>" style="width:70px; height: 70px;"></td>
                         <td class="text-center"><?php echo $row['weight']; ?></td>

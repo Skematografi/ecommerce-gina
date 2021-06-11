@@ -10,7 +10,7 @@
         </div>
         <div class="modal-body">
           <div class="col-md-12">
-            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('dashboard/do_upload'); ?>" autocomplete="off">
+            <form method="post" id="form_elastis" enctype="multipart/form-data" action="<?php echo base_url('dashboard/do_upload'); ?>" autocomplete="off">
               <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">

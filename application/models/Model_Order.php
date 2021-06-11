@@ -16,9 +16,20 @@ class Model_Order extends CI_Model {
 
     public function getSales()
     {   
-        $sql = "SELECT a.id, a.code, a.name, a.created_at,CONCAT(a.address,', ',a.district,', ',a.city,', ',a.state) as address, a.phone, a.evidence_transfer, a.account_name, a.account_number, a.total_price ,a.shipping_cost
+        $sql = "SELECT a.id, a.invoice,a.code, a.name, a.created_at,CONCAT(a.address,', ',a.district,', ',a.city,', ',a.state) as address, a.phone, a.evidence_transfer, a.account_name, a.account_number, a.total_price ,a.shipping_cost
 		FROM orders a
 		WHERE a.status = 'Selesai' AND a.evidence_transfer IS NOT NULL";
+
+		$data = $this->db->query($sql)->result();
+
+		return $data;
+    }
+
+    public function getReport($start,$end)
+    {   
+        $sql = "SELECT a.id, a.invoice,a.code, a.name, a.created_at,CONCAT(a.address,', ',a.district,', ',a.city,', ',a.state) as address, a.phone, a.evidence_transfer, a.account_name, a.account_number, a.total_price ,a.shipping_cost
+		FROM orders a
+		WHERE a.status = 'Selesai' AND (a.created_at BETWEEN '$start' AND '$end')";
 
 		$data = $this->db->query($sql)->result();
 

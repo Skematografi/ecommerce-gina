@@ -38,7 +38,6 @@ class Dashboard extends CI_Controller {
 		$this->load->view('dashboard/header');
 		$this->load->view('dashboard/asidebar');
 		$this->load->view('dashboard/modal_product');
-		$data['auto']=$this->Model_Produk->auto_id();
 		$data['products']= $this->getDatatableProduct();
 		$this->load->view('dashboard/produk',$data);	
 	}
@@ -54,7 +53,7 @@ class Dashboard extends CI_Controller {
 
 		$id = $this->input->post('product_id',TRUE);
 
-		if($id == ''){
+		if(strlen($id) == 0){
 			//Proses penyimpanan data
 			if (!$this->upload->do_upload('image')) {
 				$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk gagal di tambah</div>');
@@ -90,11 +89,10 @@ class Dashboard extends CI_Controller {
 					'stock' => $this->input->post('stock',TRUE)
 				];
 				$this->Model_Produk->update($id, $data); //memasukan data ke database
-				$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk berhasil di update</div>');
+				$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk berhasil di update dengan gambar sebelumnya</div>');
 				redirect('dashboard/produk');
 
 			} else {
-
 				if (!$this->upload->do_upload('image')){
 					$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk gagal di update</div>');
 					redirect('dashboard/produk');
@@ -110,7 +108,7 @@ class Dashboard extends CI_Controller {
 						'stock' => $this->input->post('stock',TRUE)
 					];
 					$this->Model_Produk->update($id, $data); //memasukan data ke database
-					$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk berhasil di update</div>');
+					$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Produk berhasil di update dengan gambar baru</div>');
 					redirect('dashboard/produk');
 	
 				}
@@ -145,13 +143,13 @@ class Dashboard extends CI_Controller {
 		$this->load->view('dashboard/asidebar');
 		$this->load->view('dashboard/modal_promo');
 		$data['promotions']= $this->getDatatablePromo();
-		$data['promo'] = $this->db->query("SELECT count(id) as aktif FROM promotions WHERE end_date >= now()")->row();
+		$data['promo'] = $this->db->query("SELECT count(id) as aktif FROM promotions WHERE end_date >= now() AND status = 1")->row();
 		$this->load->view('dashboard/promo',$data);	
 	}
 
     public function tambah_promo(){
 
-		$id = $this->input->post('product_id',TRUE);
+		$id = $this->input->post('promo_id',TRUE);
 		$code = strtoupper($this->input->post('code',TRUE));
 		$start = new DateTime($this->input->post('start_date'));
 		$end = new DateTime($this->input->post('end_date'));
@@ -163,7 +161,7 @@ class Dashboard extends CI_Controller {
 
 		} else {
 
-			if($id == ''){
+			if(strlen($id) == 0){
 					$data = [
 						'code' => $code,
 						'name' => htmlspecialchars($this->input->post('name',TRUE)),
@@ -181,6 +179,7 @@ class Dashboard extends CI_Controller {
 					}
 
 			} else {
+
 				$data = [
 					'name' => htmlspecialchars($this->input->post('name',TRUE)),
 					'description' => htmlspecialchars($this->input->post('description',TRUE)),
@@ -189,12 +188,21 @@ class Dashboard extends CI_Controller {
 					'discount' => $this->input->post('discount',TRUE)
 				];
 
-				if($check == 0){
+				$now = date('Y-m-d');
+
+				$sql = "SELECT a.id as total FROM promotions a WHERE a.end_date > '$now' AND a.status = 1";
+
+				$query = $this->db->query($sql);
+
+				$num_row = $query->num_rows();
+
+				if($num_row > 0){
+					$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Sudah ada promo yang berjalan</div>');
+				} else {
 					$this->Model_Promo->update($id, $data); //memasukan data ke database
 					$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Promo berhasil di update</div>');
-				} else {
-					$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Promo gagal di update, Kode sudah pernah digunakan</div>');
 				}
+				
 			}
 		}
 
@@ -244,6 +252,7 @@ class Dashboard extends CI_Controller {
 		$this->load->view('dashboard/header');
 		$this->load->view('dashboard/asidebar');
 		$this->load->view('dashboard/modal_konfirmasi');
+		$this->load->view('dashboard/modal_tolak');
 		$this->load->view('dashboard/modal_struk');
 
 		$get_orders = $this->Model_Order->getOrder();
@@ -260,7 +269,7 @@ class Dashboard extends CI_Controller {
 				'evidence_transfer' => '<a href="javascript:void(0);" title="Lihat struk pembayaran" data-struck="'.$item->evidence_transfer.'"  data-toggle="modal" data-target="#modal_struk" onclick="showStruck(this)"><i class="fa fa-file-text text-secondary" style="font-size:20px;"></i></a>',
 				'sender' => 'No. Rek. : <br><b>'.$item->account_number.'</b><br>Atas Nama : <br><b>'.$item->account_name.'</b><br>Nominal : <br><b>Rp '.number_format($item->total_price).'</b>',
 				'shipping_cost' => '<b>Rp '.number_format($item->shipping_cost).'</b>',
-				'action' => '<a href="javascript:void(0);" title="Konfirmasi pesanan" data-id="'.$item->id.'" data-toggle="modal" data-target="#modal_konfirmasi" onclick="confOrder(this)"><i class="fa fa-check-square text-success" style="font-size:30px;"></i></a>'
+				'action' => '<a href="javascript:void(0);" title="Konfirmasi pesanan" data-id="'.$item->id.'" data-toggle="modal" data-target="#modal_konfirmasi" onclick="confOrder(this)"><i class="fa fa-check-circle text-success" style="font-size:30px;"></i></a><br><br><a href="javascript:void(0);" title="Tolak pesanan" data-id="'.$item->id.'" data-toggle="modal" data-target="#modal_tolak" onclick="cancelOrder(this)"><i class="fa fa-close text-danger" style="font-size:30px;"></i></a>'
 			];
 		}
 
@@ -296,6 +305,28 @@ class Dashboard extends CI_Controller {
 
 	}
 
+	public function tolak_pesanan(){
+
+		$id = $this->input->post('order_id_tolak');
+		$because = strtoupper($this->input->post('because'));
+
+		$order = $this->db->query("UPDATE orders a SET a.status = 'Ditolak', a.because = '$because' WHERE id = '$id'");
+
+		if(!$order){
+			$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Pesanan gagal ditolak</div>');
+
+		} else {
+				
+				$this->sendEmailWithBecause($id);
+
+				$this->session->set_flashdata('message', '<div class="alert alert-primary alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Pesanan berhasil ditolak dan pembeli telah dikirim email konfirmasi</div>');
+			
+		}
+
+		redirect('dashboard/pesanan');			
+
+	}
+
 	public function penjualan()
 	{
 		$this->load->view('dashboard/header');
@@ -324,31 +355,61 @@ class Dashboard extends CI_Controller {
 
 	public function laporan()
 	{
-		$dari=$this->input->post('dari');
-		$sampai=$this->input->post('sampai');
+		$start = new DateTime($this->input->post('start_date'));
+		$end = new DateTime($this->input->post('end_date'));
+		$str_start = $this->input->post('start_date');
+		$str_end = $this->input->post('end_date');
 
-		$data['pesanan']=$this->db->query("
-				SELECT *
-				FROM pesanan
-				LEFT JOIN detail_pesanan
-				ON pesanan.id_pesanan = detail_pesanan.id_pesanan
-				WHERE tanggal
-				BETWEEN '$dari' AND '$sampai'
-				
-			")->result();
+		if($start > $end){
+			$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Tanggal mulai harus kurang dari tanggal akhir</div>');
+			redirect('dashboard/penjualan');
+		}
 
-		$data['total']=$this->db->query("
-				SELECT SUM(total)
-				AS penjualan
-				FROM pesanan
-				WHERE status = 0
-				UNION ALL
-				SELECT total
-				FROM pesanan
-				WHERE tanggal
-				BETWEEN '$dari' AND '$sampai' 				
-			")->row();
-		$this->load->view('dashboard/laporan',$data);
+		$get_orders = $this->Model_Order->getReport($str_start,$str_end);
+
+		$orders = array();
+		$total = 0;
+
+		foreach($get_orders as $item){
+
+			$orders[] = [
+				'invoice' => $item->invoice,
+				'date' => $item->created_at,
+				'buyer' => '<b>'.$item->name.'</b><br>'.$item->address.'<br>Telp. '.$item->phone,
+				'product' => $this->Model_Order->getOrderDetail($item->id),
+				'sender' => 'No. Rek. : <br><b>'.$item->account_number.'</b><br>Atas Nama : <br><b>'.$item->account_name,
+				'nominal' => '<b>'.number_format($item->total_price).'</b>'
+			];
+
+			$total += $item->total_price;
+		}
+
+		$group_id = $this->db->query("SELECT GROUP_CONCAT(a.id) as id
+										FROM orders a
+										WHERE a.status = 'Selesai' 
+										AND a.evidence_transfer IS NOT NULL")->row();
+
+		$sql_sale = "SELECT SUM(b.quantity) as total
+						FROM order_details b 
+						WHERE b.order_id IN ($group_id->id) AND (b.created_at BETWEEN '$str_start' AND '$str_end')";
+		// var_dump($sql_sale); die();
+		$exec_sql = $this->db->query($sql_sale)->row();
+
+		$report =  [
+			'orders' => $orders, 
+			'admin' =>  $this->session->userdata('name'),
+			'total' => $total,
+			'start' => $this->input->post('start_date'),
+			'end' => $this->input->post('end_date'),
+			'total_sale' => $exec_sql->total
+		];
+
+		$this->load->library('pdf');
+        $html = $this->load->view('dashboard/GeneratePdfView', $report, true);
+        $this->pdf->createPDF($html, 'mypdf', false);
+
+
+		// $this->load->view('dashboard/laporan',$data);
 			
 	}
 
@@ -433,7 +494,7 @@ class Dashboard extends CI_Controller {
 	}
 
 	//Send Email to buyer
-	function sendEmailWithResi($id = 14){
+	function sendEmailWithResi($id){
 
 		$data = $this->db->query("SELECT * FROM orders WHERE id = '$id'")->row();
 
@@ -449,4 +510,22 @@ class Dashboard extends CI_Controller {
 
 		$this->email->send();
     }
+
+	function sendEmailWithBecause($id){
+
+		$data = $this->db->query("SELECT * FROM orders WHERE id = '$id'")->row();
+
+        $this->email->from('admin@colornizer.co', 'Colornizer.co');
+
+		$this->email->to($data->email);
+ 
+		$this->email->subject('Colonizer.co');
+        
+        $this->email->message($this->load->view('template_email/tolak',$data, true));
+
+		$this->email->set_mailtype('html');
+
+		$this->email->send();
+    }
+
 }

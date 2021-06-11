@@ -24,7 +24,7 @@ class  Model_Cart extends CI_Model {
 
 	public function get_produk_all()
     {
-        $query = $this->db->get('produk');
+        $query = $this->db->get('orders');
         return $query->result_array();
     }
 

@@ -8,8 +8,11 @@ class Account extends CI_Controller {
 		$this->load->library('cart');
 		$this->load->model('Model_Location');
 		$ver=$this->session->userdata('member_id');
+		$role=$this->session->userdata('role_id');
 		if($ver == ''){
 			redirect('auth');
+		} elseif($role == 1){
+			redirect('dashboard');
 		}
 	}
 

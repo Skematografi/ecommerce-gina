@@ -105,6 +105,7 @@
 
     let id = $(ele).attr('data-id');
     let url = '<?= base_url(); ?>Dashboard/edit_promo';
+    let form = $('#form_elastis').serialize();
 
     $.ajax({
       url : url,
