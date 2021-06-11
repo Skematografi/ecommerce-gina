@@ -16,16 +16,38 @@ class Ecommerce extends CI_Controller {
 		$this->headTemplate();
 		$data['terbaru']=$this->db->query('SELECT * FROM products ORDER BY created_at DESC LIMIT 3')->result();
 		$this->load->view('ecommerce/index',$data);
+
+		$member_id = $this->session->userdata('member_id');
+		$check_promo = $this->db->query("SELECT count(id) as aktif FROM promotions WHERE end_date >= now()")->row();
+		// var_dump($member_id."<br>".$check_promo->aktif); die();
+		if($member_id != '' && $check_promo->aktif > 0 ){
+			$promo = $this->db->query("SELECT * FROM promotions WHERE end_date >= now() AND status = 1")->row();
+			$this->load->view('ecommerce/modal_voucher',$promo);
+		}
+
 		$this->load->view('ecommerce/Shop_footer');
 			
 	}
 
 	public function product_grid()
 	{
+		$key = $this->input->get('cari');
 		$this->headTemplate();
-		$data['produk']= $this->Model_Produk->displayProduct();
-		$this->load->view('ecommerce/product_grid',$data);
 
+		if($key == ''){
+			$data['produk']= $this->Model_Produk->displayProduct();
+		} else {
+
+			$data['produk']= $this->Model_Produk->searchProduct($key);
+
+			if($data['produk']==NULL){
+				$this->session->set_flashdata('message', 'Pencarian tidak ditemukan.');
+			}else{
+				$this->session->set_flashdata('message', 'Hasil pencarian');
+			}
+		}
+
+		$this->load->view('ecommerce/product_grid',$data);
 	}
 	
 	public function product_detail()
@@ -33,24 +55,6 @@ class Ecommerce extends CI_Controller {
 		$this->headTemplate();
 		$data['produk'] = $this->Model_Produk->detailProduct($this->input->post());
 		$this->load->view('ecommerce/product_detail',$data);
-	}
-
-	public function product_search()
-	{
-		$cari = $this->input->get('cari');
-
-		$this->load->view('ecommerce/Shop_header');
-		$this->load->view('ecommerce/Shop_navbar');
-		$this->db->like('kategori',$cari);
-		$data['produk']= $this->db->get('produk')->result();
-		if($data['produk']==NULL){
-			$this->session->set_flashdata('message', 'Pencarian tidak ditemukan.');
-		}else{
-			$this->session->set_flashdata('message', 'Hasil pencarian');
-		}
-		$this->load->view('ecommerce/product_grid',$data);
-		$this->load->view('ecommerce/Shop_footer');
-
 	}
 
 	public function confirmation()
@@ -95,7 +99,7 @@ class Ecommerce extends CI_Controller {
 	{
 		$this->headTemplate();
 		$member_id = $this->session->userdata('member_id');
-		$data['riwayat'] = $this->db->query("SELECT created_at, code, total_price, status, resi  from orders where member_id = '".$member_id."' ")->result_array();
+		$data['riwayat'] = $this->db->query("SELECT created_at, code, total_price, status, resi  from orders where member_id = '".$member_id."' ")->result_array();		
 		$this->load->view('ecommerce/history', $data);
 		$this->load->view('ecommerce/Shop_footer');
 	}
@@ -170,6 +174,22 @@ class Ecommerce extends CI_Controller {
 
 		$file = $this->upload->data();
 		return $file['file_name'];
+	}
+
+	public function checkVoucher(){
+		$code = strtoupper($this->input->post('code'));
+		$now = date('Y-m-d');
+		$disc = 0;
+
+		$sql = "SELECT discount FROM promotions WHERE code = '$code' AND end_date >= '$now' AND status = 1";
+
+		$getDiscount = $this->db->query($sql)->row();
+
+		if(!is_null($getDiscount)){
+			$disc = $getDiscount->discount;
+		}
+
+		echo json_encode(['discount' => $disc]);
 	}
 
 }

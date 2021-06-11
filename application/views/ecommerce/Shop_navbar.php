@@ -76,8 +76,8 @@
                     <div class="row" >
                         <div class="col-md-12" >
                             <div class="search__inner">
-                                <form action="<?php echo base_url();?>ecommerce/product_search" method="get" autocomplete="off">
-                                    <input placeholder="Search here... " name="cari" id="cari" type="text">
+                                <form action="<?php echo base_url();?>ecommerce/product_grid" method="get" autocomplete="off">
+                                    <input placeholder="Masukan pencarian... " name="cari" id="cari" type="text">
                                     <button type="submit"></button>
                                 </form>
                                 <div class="search__close__btn">

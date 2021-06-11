@@ -97,6 +97,7 @@ if ($cart = $this->cart->contents()){
                                         <?php
                                             if($member_id != ''){
                                                 echo '<li>DISKON</li>';
+                                                echo '<li>VOUCHER</li>';
                                             }
                                         ?>
                                     </ul>
@@ -106,6 +107,19 @@ if ($cart = $this->cart->contents()){
                                         <?php
                                             if($member_id != ''){
                                                 echo '<li class="text-right"><input type="text" style="color:gray; border: none; float: right; text-align: right; width: 500px;" id="discount" name="discount" value="Potongan 5% Dengan Min. Belanja Rp 500.000" readonly required></li>';
+
+                                                echo '<li class="text-right">
+                                                        <div class="buttons-cart" style="margin-top:20px; margin-right:0;">
+                                                            <input type="button" onclick="checkVoucher()" value="Gunakan"  style="float: right; margin-right:0;" />
+                                                        </div> 
+                                                        <div style="overflow: hidden; padding-right: .5em;">
+                                                            <input type="text" style="text-align: center; width: 200px; padding: 0 15px; font-size: 12px;
+                                                            font-weight: 700;
+                                                            height: 40px;
+                                                            line-height: 40px;" id="code_voucher" name="code_voucher" />
+                                                        </div>
+                                                        <div class="msg-voucher" style="margin-top:20px;"></div>
+                                                    </li>';
                                             }
                                         ?>
                                         
@@ -245,6 +259,55 @@ if ($cart = $this->cart->contents()){
                             $('#total').val(cost+grand_total);
                         }
 
+                    }
+
+
+                }, error : function(err){
+                   console.log(err)
+                } 
+                
+            })
+        }
+
+        function checkVoucher(){
+
+            $('#code_voucher').attr('disabled', true);
+            let code = $('#code_voucher').val();
+            let url = "<?php echo base_url(); ?>ecommerce/checkVoucher";
+
+
+            $.ajax({
+                type : 'POST',
+                url : url,
+                data : { code : code},
+                success : function(res){
+
+                    let data = JSON.parse(res);
+                    let voucher = parseInt(data.discount);
+                    let grand_total = parseInt($('#grand_total').val());
+                    let discount_member = parseInt($('#discount_member').val());
+                    let ongkir = parseInt($('#ongkir').val());
+
+                    if(voucher > 0 && grand_total >= 500000){
+                        let discount = (grand_total/100) * 5;
+                        let total_after_discount = grand_total - discount;
+                        let disc_with_voucher =  (grand_total/100) * voucher;
+                        let total_end = total_after_discount - disc_with_voucher;
+                        $('#discount_voucher').val(disc_with_voucher);
+                        $('#total').val(ongkir+total_end);
+
+                        $('.msg-voucher').append('<span class="text-info">Voucher '+voucher+'% berhasil digunakan (- Rp '+disc_with_voucher+')</span>');
+
+                    } else if(voucher > 0 && grand_total < 500000){
+                        let disc_with_voucher =  (grand_total/100) * voucher;
+                        let total_end = grand_total - disc_with_voucher;
+                        $('#discount_voucher').val(disc_with_voucher);
+                        $('#total').val(ongkir+total_end);
+
+                        $('.msg-voucher').empty().append('<span class="text-info">Voucher '+voucher+'% berhasil digunakan (- Rp '+disc_with_voucher+')</span>');
+                    } else {
+                        $('.msg-voucher').empty().append('<span style="color:red;">Voucher tidak dapat digunakan!</span>');
+                        $('#code_voucher').attr('disabled', false);
                     }
 
 

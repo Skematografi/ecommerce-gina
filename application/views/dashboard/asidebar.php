@@ -3,7 +3,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="<?php echo base_url();?>dashboard" class="brand-link">
+    <a href="javascript:void(0);" class="brand-link">
       <img src="<?php echo base_url();?>assets/images/logo/logo_white.png" alt="AdminLTE Logo" class="brand-image"
            style="opacity: .8">
       <span class="brand-text font-weight-light"><small>Colonizer.co</small></span>
@@ -17,7 +17,7 @@
           <img src="<?php echo base_url();?>assets/images/avatar/admin.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="<?php echo base_url();?>profil" class="d-block"><?php echo $this->session->userdata('nama');?></a>
+          <a href="javascript:void(0);" class="d-block"><?php echo $this->session->userdata('name');?></a>
         </div>
       </div>
 
@@ -78,12 +78,6 @@
                 </a>
               </li>
             </ul>
-          </li>
-          <li class="nav-item">
-            <a href="<?php echo base_url();?>profil" class="nav-link">
-              <i class="nav-icon fas fa-user"></i>
-              <p>Profil</p>
-            </a>
           </li>
            <li class="nav-item">
             <a href="<?php echo base_url();?>auth/logout" class="nav-link">

@@ -2,7 +2,7 @@
         <section class="htc__product__grid bg__white">
             <div class="container">
                 <hr><h2 class="text-center">PRODUK KAMI</h2><hr>
-                <h2 style="text-align: center;"><?php echo $this->session->flashdata('message'); ?></h2>
+                <p style="text-align: center; color:gray; font-size:20px; margin-bottom:50px;"><?php echo $this->session->flashdata('message'); ?></p>
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="htc__product__rightidebar">
@@ -58,7 +58,7 @@
             </div>
         </section>
         <!-- End Product Grid -->
-        <div class="htc__brand__area bg__cat--4">
+        <div class="htc__brand__area bg__cat--4" style="margin-top: 50px;">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -78,7 +78,7 @@
         </div>
     </div>
 
-    <a href="https://api.whatsapp.com/send?phone=6285157552214&text=Hallo%20Agan%20Colonizer.co" target="_blank" class="icon-whatsapp">
+    <a href="https://api.whatsapp.com/send?phone=6281315052884&text=Hallo%20Agan%20Colonizer.co" target="_blank" class="icon-whatsapp">
         <img src="<?php echo base_url();?>assets/images/logo/whatsapp.png" alt="icon whatsapp" id="whatsapp" >
     </a>
 

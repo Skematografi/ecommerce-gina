@@ -40,9 +40,9 @@
         </div>
       </form>
 
-      <p class="mb-1">
+      <!-- <p class="mb-1">
         <a href="<?php echo base_url();?>auth/forget">Lupa Password?</a>
-      </p>
+      </p> -->
       <p class="mb-0">
         <a href="<?php echo base_url();?>auth/register" class="text-center">Daftar Member</a>
       </p>

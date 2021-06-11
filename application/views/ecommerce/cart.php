@@ -82,7 +82,7 @@
                                 }
                             else
                                 {
-                                    echo "<h2 style='text-align:center; margin:20px;'><i style='color:gray; padding:20px; font-size: 50pt;' class='fas fa-shopping-cart'></i><br>Keranjang kosong</h2>"; 
+                                    echo "<h2 style='text-align:center; margin-top:50px; margin-bottom:100px;'><i style='color:gray; padding:20px; font-size: 50pt;' class='fas fa-shopping-cart'></i><br>Keranjang kosong</h2>"; 
                                 }   
                         ?>
                         
@@ -95,7 +95,7 @@
                             
     </div>     
 
-    <a href="https://api.whatsapp.com/send?phone=6285157552214&text=Hallo%20Agan%20Colonizer.co" target="_blank" class="icon-whatsapp">
+    <a href="https://api.whatsapp.com/send?phone=6281315052884&text=Hallo%20Agan%20Colonizer.co" target="_blank" class="icon-whatsapp">
         <img src="<?php echo base_url();?>assets/images/logo/whatsapp.png" alt="icon whatsapp" id="whatsapp" >
     </a>
         

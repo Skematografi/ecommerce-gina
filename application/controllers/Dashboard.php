@@ -5,6 +5,7 @@ class Dashboard extends CI_Controller {
 	
 	function __construct(){
 		parent::__construct();
+		$this->load->model('Model_Order');
 		$this->load->model('Model_Produk');
 		$this->load->model('Model_Promo');
 		$this->load->model('Model_Pelanggan');
@@ -20,10 +21,10 @@ class Dashboard extends CI_Controller {
 		$this->load->view('dashboard/header');
 		$this->load->view('dashboard/asidebar');
 
-		$data['pesanan']=$this->db->query('SELECT COUNT(id_pesanan) as total FROM pesanan WHERE status = 1')->row();
-		$data['penjualan']=$this->db->query('SELECT COUNT(id_pesanan) as total FROM pesanan WHERE status = 0')->row();
-		$data['produk']=$this->db->query('SELECT COUNT(id_produk) as total FROM produk')->row();
-		$data['pelanggan']=$this->db->query('SELECT COUNT(id_pelanggan) as total FROM pelanggan')->row();
+		$data['pesanan']=$this->db->query("SELECT COUNT(id) as total FROM orders WHERE status = 'Menunggu Verifikasi' AND evidence_transfer IS NOT NULL")->row();
+		$data['penjualan']=$this->db->query("SELECT COUNT(id) as total FROM orders WHERE status = 'Selesai' AND resi IS NOT NULL")->row();
+		$data['produk']=$this->db->query('SELECT COUNT(id) as total FROM products WHERE status = 1')->row();
+		$data['pelanggan']=$this->db->query("SELECT COUNT(id) as total FROM members WHERE status = 1 AND email != 'admin@gmail.com'")->row();
 		$this->load->view('dashboard/index',$data);
 		$this->load->view('dashboard/footer');
 			
@@ -144,6 +145,7 @@ class Dashboard extends CI_Controller {
 		$this->load->view('dashboard/asidebar');
 		$this->load->view('dashboard/modal_promo');
 		$data['promotions']= $this->getDatatablePromo();
+		$data['promo'] = $this->db->query("SELECT count(id) as aktif FROM promotions WHERE end_date >= now()")->row();
 		$this->load->view('dashboard/promo',$data);	
 	}
 
@@ -241,42 +243,83 @@ class Dashboard extends CI_Controller {
 	{
 		$this->load->view('dashboard/header');
 		$this->load->view('dashboard/asidebar');
-		$data['pesanan']=$this->db->query('
-				SELECT * FROM pesanan
-				LEFT JOIN detail_pesanan
-				ON pesanan.id_pesanan = detail_pesanan.id_pesanan
-				WHERE status = 1
-			')->result();
-		$this->load->view('dashboard/pesanan',$data);	
+		$this->load->view('dashboard/modal_konfirmasi');
+		$this->load->view('dashboard/modal_struk');
+
+		$get_orders = $this->Model_Order->getOrder();
+
+		$orders = array();
+
+		foreach($get_orders as $item){
+
+			$orders[] = [
+				'code' => $item->code,
+				'date' => $item->created_at,
+				'buyer' => '<b>'.$item->name.'</b><br>'.$item->address.'<br>Telp. '.$item->phone,
+				'product' => $this->Model_Order->getOrderDetail($item->id),
+				'evidence_transfer' => '<a href="javascript:void(0);" title="Lihat struk pembayaran" data-struck="'.$item->evidence_transfer.'"  data-toggle="modal" data-target="#modal_struk" onclick="showStruck(this)"><i class="fa fa-file-text text-secondary" style="font-size:20px;"></i></a>',
+				'sender' => 'No. Rek. : <br><b>'.$item->account_number.'</b><br>Atas Nama : <br><b>'.$item->account_name.'</b><br>Nominal : <br><b>Rp '.number_format($item->total_price).'</b>',
+				'shipping_cost' => '<b>Rp '.number_format($item->shipping_cost).'</b>',
+				'action' => '<a href="javascript:void(0);" title="Konfirmasi pesanan" data-id="'.$item->id.'" data-toggle="modal" data-target="#modal_konfirmasi" onclick="confOrder(this)"><i class="fa fa-check-square text-success" style="font-size:30px;"></i></a>'
+			];
+		}
+
+		$this->load->view('dashboard/pesanan', ['orders' => $orders]);	
 	}
 
-	public function selesai($id_pesanan){
-		$selesai=0;
+	public function konfirmasi_pesanan(){
 
-		$data=array(
-			'status' => $selesai
-		);
+		$id = $this->input->post('order_id');
+		$resi = strtoupper($this->input->post('resi'));
 
-		$where = array(
-			'id_pesanan' => $id_pesanan
-		);
+		$order = $this->db->query("UPDATE orders a SET a.status = 'Selesai', a.resi = '$resi' WHERE id = '$id'");
 
-		$this->Model_Produk->update($where,$data,'pesanan'); 
-	    $this->session->set_flashdata('message', '<div class="alert alert-primary alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Pesanan selesai diproses</div>');
-	    redirect('dashboard/pesanan');		
+		if(!$order){
+			$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Pesanan gagal dikonfirmasi</div>');
+
+		} else {
+
+			$update_product = $this->Model_Order->updateStock($id);
+			
+			if(!$update_product){
+				$this->session->set_flashdata('message', '<div class="alert alert-warning alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Stok produk gagal diupdate</div>');
+			} else {
+				
+				$this->sendEmailWithResi($id);
+
+				$this->session->set_flashdata('message', '<div class="alert alert-primary alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Pesanan berhasil dikonfimasi ke pembeli</div>');
+			
+			}
+		}
+
+		redirect('dashboard/pesanan');			
+
 	}
 
 	public function penjualan()
 	{
 		$this->load->view('dashboard/header');
 		$this->load->view('dashboard/asidebar');
-		$data['pesanan']=$this->db->query('
-				SELECT * FROM pesanan
-				LEFT JOIN detail_pesanan
-				ON pesanan.id_pesanan = detail_pesanan.id_pesanan
-				WHERE status = 0
-			')->result();
-		$this->load->view('dashboard/penjualan',$data);	
+		$this->load->view('dashboard/modal_struk');
+		$this->load->view('dashboard/modal_report');
+
+		$get_orders = $this->Model_Order->getSales();
+
+		$orders = array();
+
+		foreach($get_orders as $item){
+
+			$orders[] = [
+				'code' => $item->code,
+				'date' => $item->created_at,
+				'buyer' => '<b>'.$item->name.'</b><br>'.$item->address.'<br>Telp. '.$item->phone,
+				'product' => $this->Model_Order->getOrderDetail($item->id),
+				'evidence_transfer' => '<a href="javascript:void(0);" title="Lihat struk pembayaran" data-struck="'.$item->evidence_transfer.'"  data-toggle="modal" data-target="#modal_struk" onclick="showStruck(this)"><i class="fa fa-file-text text-secondary" style="font-size:20px;"></i></a>',
+				'sender' => 'No. Rek. : <br><b>'.$item->account_number.'</b><br>Atas Nama : <br><b>'.$item->account_name.'</b><br>Nominal : <br><b>Rp '.number_format($item->total_price).'</b>'
+			];
+		}
+
+		$this->load->view('dashboard/penjualan', ['orders' => $orders]);	
 	}
 
 	public function laporan()
@@ -365,9 +408,10 @@ class Dashboard extends CI_Controller {
 		
 		foreach($products as $row) {
 			
+			$start = new DateTime($row['start_date']);
 			$end = new DateTime($row['end_date']);
 
-			if($end > $now) {
+			if($end >= $now) {
 				$status = '<div class="badge badge-success">Berjalan</div>';
 			} else {
 				$status = '<div class="badge badge-secondary">Berakhir</div>';
@@ -387,4 +431,22 @@ class Dashboard extends CI_Controller {
 
         return $data;
 	}
+
+	//Send Email to buyer
+	function sendEmailWithResi($id = 14){
+
+		$data = $this->db->query("SELECT * FROM orders WHERE id = '$id'")->row();
+
+        $this->email->from('admin@colornizer.co', 'Colornizer.co');
+
+		$this->email->to($data->email);
+ 
+		$this->email->subject('Colonizer.co');
+        
+        $this->email->message($this->load->view('template_email/konfirmasi',$data, true));
+
+		$this->email->set_mailtype('html');
+
+		$this->email->send();
+    }
 }

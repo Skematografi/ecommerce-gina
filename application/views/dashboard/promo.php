@@ -15,7 +15,9 @@
                   <h3>List Promo</h3>
                 </div>
                 <div class="col-md-6">
+                  <?php if($promo->aktif == 0): ?>
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_tambah"  style="float:right;" onclick="cleanForm()">Tambah</button>
+                  <?php endif; ?>
                 </div>
               </div>
             </div>

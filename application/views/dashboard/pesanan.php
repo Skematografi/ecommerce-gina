@@ -1,13 +1,6 @@
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h4>Pesanan</h4>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
     </section>
     <!-- Main content -->
     <section class="content">
@@ -15,51 +8,45 @@
         <div class="col-12">
           <small><?php echo $this->session->flashdata('message'); ?></small>
           <div class="card">
+            <div class="card-header">
+              <h3>Pesanan</h3>
+            </div>
             <!-- /.card-header -->
             <div class="card-body">
-              <table id="example1" class="table table-bordered table-striped table-responsive">
-                <thead>
+            <table id="example1" class="table table-bordered table-striped table-responsive">
+                <thead class="text-center">
                 <tr>
                   <th>No.</th>
-                  <th>ID Pesanan</th>
+                  <th>Kode Transaksi</th>
                   <th>Tanggal</th>
-                  <th>ID Pelanggan</th>
-                  <th>Nama Pelanggan</th>
-                  <th>Telepon</th>
-                  <th>Kab.</th>
-                  <th>Kec.</th>
-                  <th>Alamat</th>
-                  <th>ID Produk</th>
-                  <th>Jumlah</th>
-                  <th>Harga</th>
+                  <th>Pembeli</th>
+                  <th>Produk</th>
+                  <th>Struk</th>
+                  <th>Pengirim</th>
                   <th>Ongkir</th>
-                  <th>Total</th>
-                  <th>Status</th>
+                  <th>Aksi</th>
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($pesanan as $row): $i=1; ?>
+                <?php 
+                  $i=1; 
+                  if(isset($orders)):
+                  foreach($orders as $row): ?>
                 <tr>
-                  <td><?php echo $i++; ?></td>
-                  <td><?php echo $row->id_pesanan; ?></td>
-                  <td><?php echo $row->tanggal; ?></td>
-                  <td><?php echo $row->id_pelanggan; ?></td>
-                  <td><?php echo $row->nama_pelanggan; ?></td>
-                  <td><?php echo $row->telpon_pelanggan; ?></td>
-                  <td><?php echo $row->kabupaten; ?></td>
-                  <td><?php echo $row->kecamatan; ?></td>
-                  <td><?php echo $row->alamat; ?></td>
-                  <td><?php echo $row->id_produk; ?></td>
-                  <td><?php echo $row->jumlah; ?></td>
-                  <td><?php echo $row->harga; ?></td>
-                  <td><?php echo $row->ongkir; ?></td>
-                  <td><?php echo $row->total; ?></td>
-                  <td class="text-center">
-                   <?php echo anchor('dashboard/selesai/'.$row->id_pesanan, "<button class='btn btn-success'>Selesai</button>");
-                  ?>
-                </td>
+                  <td class="text-center"><?php echo $i++; ?></td>
+                  <td><?php echo $row['code']; ?></td>
+                  <td><?php echo $row['date']; ?></td>
+                  <td><?php echo $row['buyer']; ?></td>
+                  <td><?php echo $row['product']; ?></td>
+                  <td class="text-center"><?php echo $row['evidence_transfer']; ?></td>
+                  <td><?php echo $row['sender']; ?></td>
+                  <td><?php echo $row['shipping_cost']; ?></td>
+                  <td class="text-center"><?php echo $row['action']; ?></td>
                 </tr>
-                <?php endforeach; ?>
+                <?php
+                  endforeach; 
+                  endif;
+                ?>
                 </tbody>
               </table>
             </div>
@@ -71,11 +58,13 @@
       </div>
       <!-- /.row -->
     </section>
+
+
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <strong>Copyright &copy; 2020 <a href="<?php echo base_url();?>">Toko Sinar Rangkasbitung</a>.</strong>
+    <strong>Copyright &copy; 2021 <a href="<?php echo base_url();?>" target="_blank">Clothing Brand Colonizer.co</a>.</strong>
     All rights reserved.
   </footer>
 
@@ -103,15 +92,18 @@
 <script>
   $(function () {
     $("#example1").DataTable();
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-    });
   });
+
+  function confOrder(ele){
+    let id = $(ele).attr('data-id');
+    $('#order_id').val(id);
+  }
+
+  function showStruck(ele){
+    let img = $(ele).attr('data-struck');
+    $('#img_struck').attr('src', '<?= base_url(); ?>assets/struk/'+img)
+  }
+  
 </script>
 </body>
 </html>

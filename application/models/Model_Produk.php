@@ -80,6 +80,26 @@ class  Model_Produk extends CI_Model {
 		return $query->result();
 	}
 
+	public function searchProduct($key){
+		$sql = "SELECT a.id,a.code,a.name,a.category,a.image,a.weight,a.description,a.price,
+				(SELECT b.stock FROM products b WHERE b.code = a.code AND b.size = 'S') as s,
+				(SELECT c.stock FROM products c WHERE c.code = a.code AND c.size = 'M') as m,
+				(SELECT d.stock FROM products d WHERE d.code = a.code AND d.size = 'L') as l,
+				(SELECT e.stock FROM products e WHERE e.code = a.code AND e.size = 'XL') as xl,
+				(SELECT f.stock FROM products f WHERE f.code = a.code AND f.size = 'XXL') as xxl,
+				(SELECT g.stock FROM products g WHERE g.code = a.code AND g.size = 'One Size') as one_size
+				FROM products a 
+				WHERE a.status = 1
+				AND (a.name LIKE '%$key%'
+				OR a.category LIKE '%$key%')
+				Group By a.code
+				order by a.created_at";
+
+		$query =  $this->db->query($sql);
+
+		return $query->result();
+	}
+
 	public function detailProduct($data){
 
 		$sql = "SELECT a.id,a.code,a.name,a.category,a.image,a.weight,a.description,a.price,
