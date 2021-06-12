@@ -11,7 +11,7 @@ class Dashboard extends CI_Controller {
 		$this->load->model('Model_Pelanggan');
 		$this->load->helper(array('form', 'url'));
 		$ver2=$this->session->userdata('role_id');
-		if($ver2 == 2){
+		if($ver2 == 2 || $ver2 == ''){
 			redirect('ecommerce');
 		}
 	}
