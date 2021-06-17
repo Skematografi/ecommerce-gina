@@ -32,7 +32,7 @@
                         <th>Deskripsi</th>
                         <th>Kategori</th>
                         <th>Gambar</th>
-                        <th>Berat (Kg)</th>
+                        <th>Berat (gr)</th>
                         <th>Ukuran</th>
                         <th>Harga (Rp)</th>
                         <th>Stok</th>

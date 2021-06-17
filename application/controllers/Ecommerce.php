@@ -23,6 +23,8 @@ class Ecommerce extends CI_Controller {
 		if($member_id != '' && $check_promo->aktif > 0 ){
 			$promo = $this->db->query("SELECT * FROM promotions WHERE end_date >= now() AND status = 1")->row();
 			$this->load->view('ecommerce/modal_voucher',$promo);
+		} else if($member_id == ''){
+			$this->load->view('ecommerce/modal_umum');
 		}
 
 		$this->load->view('ecommerce/Shop_footer');

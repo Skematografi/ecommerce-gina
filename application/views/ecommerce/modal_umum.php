@@ -22,7 +22,7 @@
     padding: 20px;
     border: 1px solid #888;
     width: 50%;
-    height: 400px;
+    height: 450px;
     }
 
     /* The Close Button */
@@ -48,8 +48,8 @@
     }
 
     .code-voucher {
-        margin:15px;
-        padding:5px;
+        margin:30px;
+        padding:10px;
         width:95%;
         background-color: #000000;
         color: #fefefe;
@@ -62,7 +62,8 @@
      }
 </style>
 <!-- The Modal -->
-<div id="modal_voucher" class="modal">
+
+<div id="modal_umum" class="modal">
 
   <!-- Modal content -->
   <div class="modal-content modal-body">
@@ -70,13 +71,15 @@
     <div class="text-left">
     <img src="<?php echo base_url();?>assets/images/logo/logo.png" alt="Colonizer.co Llogo" style="opacity: .8; width:120px;">
     </div>
-    <h1 style="margin:15px;">VOUCHER</h1>
+    <h1 style="margin:15px;">DAPATKAN VOUCHER</h1>
     <hr style="border:1px solid #000000; margin:0; opacity: .3;">
-    <h1 class="voucher"><?= $discount; ?>%</h1>  
-    <hr style="border:1px solid #000000; margin:0; opacity: .3;">
-    <div class="code-voucher">
-        KODE : <?= $code; ?>
-    </div>
+    <h1 class="voucher">5%</h1> 
+    <P>Tanpa Batas Maksimal</P> 
+    <P>Dengan Menjadi Member Kami</P> 
+    <hr style="border:1px solid #000000; margin-bottom:20px; opacity: .3;">
+    <a href="<?php echo base_url();?>auth/register" class="code-voucher">
+        DAFTAR MEMBER SEKARANG
+    </a>
   </div>
 
 </div>
@@ -84,16 +87,12 @@
 <script>
     $(function(){
 
-        let modal = $("#modal_voucher");
-        let member = parseInt('<?php $this->session->userdata('member_id'); ?>');
-
-        if(member > 0) {
-            modal.css('display', 'block');
-        } 
+        let modal_umum = $("#modal_umum");
+        modal_umum.css('display', 'block');
 
     });
 
     function close_popup(){
-        $("#modal_voucher").css('display', 'none');
+        $("#modal_umum").css('display', 'none');
     }
 </script>
