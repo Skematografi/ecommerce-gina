@@ -28,7 +28,7 @@ class  Model_Cart extends CI_Model {
         return $query->result_array();
     }
 
-    public function generateRandomString($length = 10, $phone) {
+    public function generateRandomString($length = 10, $phone = 0) {
         $characters = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';

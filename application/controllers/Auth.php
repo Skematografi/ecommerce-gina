@@ -53,17 +53,17 @@ class Auth extends CI_Controller {
 	    				$this->session->set_userdata($data);
 	    				redirect('ecommerce');
 	    			}else{
-	    				$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Maaf Akun anda di non aktifkan!</div>');
+	    				$this->session->set_flashdata('message', '<div class="alert alert-danger alert-dismissible alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Maaf Akun anda di non aktifkan!</div>');
 	    				redirect('auth');
 	    			}
 	    			
 	    		}else{
-	    			$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Password salah!</div>');
+	    			$this->session->set_flashdata('message', '<div class="alert alert-danger alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Password salah!</div>');
 	    			redirect('auth');
 	    		}
 
 	    }else{
-	    	$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Email tidak ditemukan!</div>');
+	    	$this->session->set_flashdata('message', '<div class="alert alert-danger alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Email tidak ditemukan!</div>');
 	    	redirect('auth');
 	    }
 
@@ -79,7 +79,7 @@ class Auth extends CI_Controller {
 		$this->session->unset_userdata('member_id');
 		$this->session->unset_userdata('role_id');
 
-		$this->session->set_flashdata('msg','<div class="alert alert-success" role="alert">Anda telah berhasil keluar.</div>');
+		$this->session->set_flashdata('msg','<div class="alert alert-success alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Anda telah berhasil keluar.</div>');
 		redirect('ecommerce');
 	}
 
@@ -113,13 +113,13 @@ class Auth extends CI_Controller {
 
 	    if($email_user || $email_member){
 
-			$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Email sudah terdaftar!</div>');
+			$this->session->set_flashdata('message', '<div class="alert alert-danger alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Email sudah terdaftar!</div>');
 			redirect('auth/register');
 
 		}else{
 
 	    	if($password1 != $password2){
-	    		$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Password tidak sama!</div>');
+	    		$this->session->set_flashdata('message', '<div class="alert alert-danger alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Password tidak sama!</div>');
 	    		redirect('auth/register');
 
 	    	}else{
@@ -139,17 +139,80 @@ class Auth extends CI_Controller {
 				);
 
 				$this->db->insert('members',$data_member);
-				$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Pendaftaran berhasil, silahkan masuk.</div>');
+				$this->session->set_flashdata('message', '<div class="alert alert-success alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Pendaftaran berhasil, silahkan masuk.</div>');
 				redirect('auth');
 			}
 	    }	
 	}
 
-	public function forget()
-	{
+	
+	public function forget_password(){
 		$this->load->view('auth/auth_header');
-		$this->load->view('auth/forgot_password');
+		$this->load->view('auth/forgot_password'); 
 		$this->load->view('auth/auth_footer');
+	}
+
+	public function reset_password(){
+		$email = $this->input->post('email');
+
+		$check_email = $this->db->query("SELECT a.*, b.name
+										FROM users a 
+										LEFT JOIN members b ON b.user_id = a.id
+										WHERE a.email = '$email' AND a.role_id = 2")->row();
+
+		if(!$check_email){
+			$this->session->set_flashdata('message', '<div class="alert alert-danger alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Email tidak terdaftar!</div>');
+			redirect('auth/forget_password');
+		}
+		
+		$create_pwd = $this->generateRandomString(8);
+		$password = password_hash($create_pwd, PASSWORD_BCRYPT);
+
+		$update_user = $this->db->query("UPDATE users SET password = '$password' WHERE  id = '$check_email->id' ");
+
+		if($update_user){
+
+			$data = [
+				'email' => $check_email->email,
+				'password' => $create_pwd,
+				'name' => $check_email->name
+			];
+
+			$this->sendEmail($data);
+
+			$this->session->set_flashdata('message', '<div class="alert alert-info alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Password baru telah dikirim ke email anda.</div>');
+			redirect('auth/forget_password');
+		} else {
+			$this->session->set_flashdata('message', '<div class="alert alert-danger alert-dismissible" role="alert"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Password gagal diperbarui!</div>');
+			redirect('auth/forget_password');
+		}
+
 
 	}
+
+	function sendEmail($data){
+
+        $this->email->from('admin@gudangbuku.com', 'Gudang Buku');
+
+		$this->email->to($data['email']);
+ 
+		$this->email->subject('Password Baru');
+        
+        $this->email->message($this->load->view('reset_password',$data, true));
+
+		$this->email->set_mailtype('html');
+
+		$this->email->send();
+    }
+
+	public function generateRandomString($length = 10) {
+        $characters = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+
+        return $randomString;
+    }
 }

@@ -44,7 +44,8 @@
         <a href="<?php echo base_url();?>auth/forget">Lupa Password?</a>
       </p> -->
       <p class="mb-0">
-        <a href="<?php echo base_url();?>auth/register" class="text-center">Daftar Member</a>
+        <a href="<?php echo base_url();?>auth/register" class="text-center">Daftar Member</a><br>
+        <a href="<?php echo base_url();?>auth/forget_password">Lupa password?</a><br>
       </p>
       <p class="mt-3">
         <a style="color: #cc3399;" href="<?php echo base_url();?>" class="text-center"><i class="fa fa-sign-out"></i> Kembali</a>
